@@ -1,5 +1,6 @@
 Initialisation
 
-RYSAK Hugo
-TROHA Stanislas
+RYSAK Hugo  
+TROHA Stanislas  
+Normalement, l'action est ajoutée  
 
