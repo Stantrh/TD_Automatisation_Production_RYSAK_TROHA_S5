@@ -1,0 +1,34 @@
+name: CI Tests
+
+# Le workflow se déclenche sur chaque push et pull request sur la branche principale
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest  # Utiliser un environnement Ubuntu
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  # Récupère le code source du dépôt
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2  # Utilise l'action pour configurer PHP
+      with:
+        php-version: '8.1'  # Version de PHP que tu veux utiliser
+        extensions: mbstring, sqlite3, gd, simplexml  # Extensions PHP nécessaires
+
+    - name: Install dependencies
+      run: |
+        composer install  # Installe les dépendances via Composer
+
+    - name: Run PHPUnit tests
+      run: |
+        vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
+
