@@ -1,34 +1,34 @@
-name: CI Tests
+name: CI Tests # Ici on définit le nom du workflow
 
-# Le workflow se déclenche sur chaque push et pull request sur la branche principale
+# Dans on, on peut choisir pour quelle type d'évènement les tâches définies dans la section jobs ci-dessous vont être déclenchées
 on:
-  push:
+  push: # Lorsqu'un collaborateur du github fait un push sur la branche main. On peut ajouter autant de branches qu'on veut sur lesquelles les évènements doivent déclencher l'exécutuion des tâches.
     branches:
       - main
-  pull_request:
+  pull_request: # Idem mais pour une pull_request sur la branche main.
     branches:
       - main
 
-jobs:
-  test:
+jobs: # On définit dans cette section les tâches à exécuter lorsque les évènements ci-dessus ont été déclenchés.
+  test: # le nom de notre tâche à exécuter
 
-    runs-on: ubuntu-latest  # Utiliser un environnement Ubuntu
+    runs-on: ubuntu-latest  # On choisit d'utiliser un environnement Ubuntu car cela a fonctionné sur notre machine sous Ubuntu 22.04.4 LTS
 
-    steps:
+
+    steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
     - name: Checkout code
-      uses: actions/checkout@v3  # Récupère le code source du dépôt
+      uses: actions/checkout@v3  # On récupère le code source du repository grâce à une action github qui est prédéfinie
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2  # Utilise l'action pour configurer PHP
-      with:
-        php-version: '8.1'  # Version de PHP que tu veux utiliser
+    - name: PHP Set up
+      uses: shivammathur/setup-php@v2  # On utilise encore une action prédéfinie pour configurer php
+      with: # Permet de passer des paramètres à l'action setup-php
+        php-version: '8.1'  # Version de PHP qu'on utilise
         extensions: mbstring, sqlite3, gd, simplexml  # Extensions PHP nécessaires
 
-    - name: Install dependencies
-      run: |
+    - name: Dependences
+      run: | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
         composer install  # Installe les dépendances via Composer
 
-    - name: Run PHPUnit tests
+    - name: tests avec PHPUnit
       run: |
         vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
-
