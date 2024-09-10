@@ -1,6 +1,6 @@
 # Automatisation de la production
 
-**RYSAK** Hugo --> hugo.rysak4@etu.univ-lorraine.fr
+**RYSAK** Hugo --> hugo.rysak4@etu.univ-lorraine.fr  
 **TROHA** Stanislas --> stanislas.troha8@etu.univ-lorraine.fr
 
 
@@ -66,5 +66,11 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       run: |
         vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
 ```
+
+Voici des captures d'écrans montrant la réalisation des tests : 
+![Screen de l'installaiton de dépendances](ressources/screen.png)
+
+![Screen de l'affichage de fin une fois les tests effectués](ressources/screen_2.png)
+
 
 
