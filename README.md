@@ -29,7 +29,7 @@ Lors de chaque action faite par un utilisateur du repository github, on peut ex�
 
 On peut précisément définir l'action du workflow grâce à un fichier .yml qui doit être stocké dans le chemin ***.github/workflows/*** depuis la racine du repository.
 
-Voici le notre, ***ci.yml*** :
+Voici le notre, ***[ci.yml](.github/workflows/ci.yml)*** :
 ```yml
 name: CI Tests # Ici on définit le nom du workflow
 
@@ -74,3 +74,29 @@ Voici des captures d'écrans montrant la réalisation des tests :
 
 
 
+
+
+
+## TD 3 : Code Coverage
+
+#### Sur la machine
+
+1) Tout d'abord, il est nécessaire d'installer l'extension php **xdebug**. On le fait via `sudo apt install php-xdebug`. On peut vérifier qu'elle est bien en cours avec `php -m | grep xdebug`
+2) Une fois qu'elle est bien installée, on vérifie que le fichier **[phpunit.xml](phpunit.xml)** est configuré de sorte à pouvoir générer un rapport de couverture. 
+![alt text](ressources/image.png)
+Dans notre cas, il sera généré dans [log/php-coverage-report](log/php-coverage-report).
+3) Ensuite, pour exécuter le code coverage sur notre machine, il suffit d'abord d'installer les dépendances via le [makefile](makefile) `make install`. 
+Ensuite, lancer le serveur php avec `make start`.
+Puis faire la commande : ```XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html log/php-coverage-report```. La commmande signifie : 
+    - ***XDEBUG_MODE=coverage*** : On spécifie à l'extension xdebug de passer en mode coverage de code. Sinon on obtient un warning. On peut alternativement modifier le fichier php.ini sur sa machine mais ce n'est pas aussi pratique.
+![](ressources/image-1.png)
+    - ***--coverage-html log/php-coverage-report*** : On indique, comme vu dans [phpunit.xml](phpunit.xml) le chemin dans lequel sera généré le fichier html contenant le rapport du code coverage.
+    Normalement, l'exécution est plus longue en mode coverage et ressemble à ça : 
+    ![Success](ressources/sucess.png)
+
+4) Puis, les résultats sont disponibles dans [log/php-coverage-report](log/php-coverage-report/index.html) :
+![Resultats](ressources/resultats.png)
+
+#### Sur github action
+
+Pour activer
