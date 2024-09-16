@@ -32,3 +32,8 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
     - name: tests avec PHPUnit
       run: |
         vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
+    - name: coverage avec Xdebug
+      uses : php-actions/phpunit@v3
+      with:
+        extensions: "xdebug"
+        coverage_clover: "coverage/clover.xml"
