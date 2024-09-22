@@ -30,7 +30,8 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
     - name: Install Xdebug
       run: |
         sudo apt-get install -y php-xdebug
-        echo "xdebug.mode=coverage" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+        echo "xdebug.mode=coverage" | sudo tee -a /etc/php/8.3/cli/conf.d/20-xdebug.ini
+
 
     - name: tests avec PHPUnit
       run: |
