@@ -27,10 +27,10 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       run: |  # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
         composer install  # Installe les dépendances via Composer
 
-    - name: Install Xdebug
-      run: |
-        sudo apt-get install -y php-xdebug
-        echo "xdebug.mode=coverage" | sudo tee -a /etc/php/8.3/cli/conf.d/20-xdebug.ini
+   # - name: Install Xdebug
+    #  run: |
+     #   sudo apt-get install -y php-xdebug
+      #  echo "xdebug.mode=coverage" | sudo tee -a /etc/php/8.3/cli/conf.d/20-xdebug.ini
 
 
     - name: tests avec PHPUnit
