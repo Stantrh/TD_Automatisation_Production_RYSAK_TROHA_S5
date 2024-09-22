@@ -28,14 +28,14 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
     - name: Dependences
       run: | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
         composer install  # Installe les dépendances via Composer
-  
-    - name: tests avec PHPUnit
+  - name: Install Xdebug
       run: |
-        vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
+        sudo apt-get install -y php-xdebug
+        echo "xdebug.mode=coverage" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+   # - name: tests avec PHPUnit
+    #  run: |
+     #   vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
     - name: coverage avec Xdebug
-      uses : php-actions/phpunit@v3
-      with:
-        extensions: xdebug mbstring, sqlite3, gd, simplexml
-        script: |
-            mkdir -p coverage
-            phpunit --coverage-text=coverage/coverage.txt --coverage-cobertura=coverage/cobertura.xml 
+        run: |
+          mkdir -p coverage
+          vendor/bin/phpunit --coverage-text=coverage/coverage.txt --coverage-cobertura=coverage/cobertura.xml
