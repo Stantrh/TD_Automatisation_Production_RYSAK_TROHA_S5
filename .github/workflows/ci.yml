@@ -23,12 +23,12 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       uses: shivammathur/setup-php@v2  # On utilise encore une action prédéfinie pour configurer php
       with: # Permet de passer des paramètres à l'action setup-php
         php-version: '8.1'  # Version de PHP qu'on utilise
-        extensions: mbstring, sqlite3, gd, simplexml  # Extensions PHP nécessaires
+        extensions: mbstring, sqlite3, gd, simplexml, xdebug  # Extensions PHP nécessaires
 
     - name: Dependences
       run: | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
         composer install  # Installe les dépendances via Composer
-
+  
     - name: tests avec PHPUnit
       run: |
         vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
