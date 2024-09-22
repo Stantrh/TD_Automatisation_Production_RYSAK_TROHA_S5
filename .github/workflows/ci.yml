@@ -27,12 +27,6 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       run: |  # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
         composer install  # Installe les dépendances via Composer
 
-   # - name: Install Xdebug
-    #  run: |
-     #   sudo apt-get install -y php-xdebug
-      #  echo "xdebug.mode=coverage" | sudo tee -a /etc/php/8.3/cli/conf.d/20-xdebug.ini
-
-
     - name: tests avec PHPUnit
       run: |
         vendor/bin/phpunit --configuration phpunit.xml
@@ -41,3 +35,13 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       run: |
         mkdir -p coverage
         vendor/bin/phpunit --coverage-text=coverage/coverage.txt --coverage-cobertura=coverage/cobertura.xml
+    - name: Ajouter le rapport de couverture 1
+      uses: irongut/CodeCoverageSummary@v1
+      with:
+        coverage-file: coverage/coverage.txt
+
+    - name: Ajouter le rapport de couverture 2
+      uses: irongut/CodeCoverageSummary@v1
+      with:
+        coverage-file: coverage/cobertura.xml
+   
