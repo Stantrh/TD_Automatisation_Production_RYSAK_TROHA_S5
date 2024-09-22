@@ -36,12 +36,12 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         mkdir -p coverage
         vendor/bin/phpunit --coverage-text=coverage/coverage.txt --coverage-cobertura=coverage/cobertura.xml
     - name: Ajouter le rapport de couverture 1
-      uses: irongut/CodeCoverageSummary@v1
+      uses: irongut/CodeCoverageSummary@v1.3.0
       with:
         coverage-file: coverage/coverage.txt
 
     - name: Ajouter le rapport de couverture 2
-      uses: irongut/CodeCoverageSummary@v1
+      uses: irongut/CodeCoverageSummary@v1.3.0
       with:
         coverage-file: coverage/cobertura.xml
    
