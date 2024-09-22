@@ -1,4 +1,4 @@
-name: CI Tests # Ici on définit le nom du workflow
+name: CI Tests  # Ici on définit le nom du workflow
 
 # Dans on, on peut choisir pour quelle type d'évènement les tâches définies dans la section jobs ci-dessous vont être déclenchées
 on:
@@ -11,31 +11,32 @@ on:
 
 jobs: # On définit dans cette section les tâches à exécuter lorsque les évènements ci-dessus ont été déclenchés.
   test: # le nom de notre tâche à exécuter
-
-    runs-on: ubuntu-latest  # On choisit d'utiliser un environnement Ubuntu car cela a fonctionné sur notre machine sous Ubuntu 22.04.4 LTS
-
+    runs-on: ubuntu-latest # On choisit d'utiliser un environnement Ubuntu car cela a fonctionné sur notre machine sous Ubuntu 22.04.4 LTS
 
     steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
     - name: Checkout code
-      uses: actions/checkout@v3  # On récupère le code source du repository grâce à une action github qui est prédéfinie
+      uses: actions/checkout@v3 # On récupère le code source du repository grâce à une action github qui est prédéfinie
 
     - name: PHP Set up
       uses: shivammathur/setup-php@v2  # On utilise encore une action prédéfinie pour configurer php
       with: # Permet de passer des paramètres à l'action setup-php
-        php-version: '8.1'  # Version de PHP qu'on utilise
-        extensions: mbstring, sqlite3, gd, simplexml, xdebug  # Extensions PHP nécessaires
+        php-version: '8.1' # Version de PHP qu'on utilise
+        extensions: mbstring, sqlite3, gd, simplexml, xdebug # Extensions PHP nécessaires
 
     - name: Dependences
-      run: | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
+      run: |  # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
         composer install  # Installe les dépendances via Composer
-  - name: Install Xdebug
+
+    - name: Install Xdebug
       run: |
         sudo apt-get install -y php-xdebug
         echo "xdebug.mode=coverage" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
     - name: tests avec PHPUnit
       run: |
-       vendor/bin/phpunit --configuration phpunit.xml  # Exécute les tests unitaires avec PHPUnit
+        vendor/bin/phpunit --configuration phpunit.xml
+
     - name: coverage avec Xdebug
-        run: |
-          mkdir -p coverage
-          vendor/bin/phpunit --coverage-text=coverage/coverage.txt --coverage-cobertura=coverage/cobertura.xml
+      run: |
+        mkdir -p coverage
+        vendor/bin/phpunit --coverage-text=coverage/coverage.txt --coverage-cobertura=coverage/cobertura.xml
