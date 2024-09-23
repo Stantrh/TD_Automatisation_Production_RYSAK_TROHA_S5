@@ -42,3 +42,4 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         filename: coverage/cobertura.xml
         badge: true
         format : markdown
+        output : both
