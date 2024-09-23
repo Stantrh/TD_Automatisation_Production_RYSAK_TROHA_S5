@@ -10,7 +10,7 @@ on:
       - main
 
 jobs: # On définit dans cette section les tâches à exécuter lorsque les évènements ci-dessus ont été déclenchés.
-  Test et Code Coverage: # le nom de notre tâche à exécuter
+  Test_et_Code_Coverage: # le nom de notre tâche à exécuter
     runs-on: ubuntu-latest # On choisit d'utiliser un environnement Ubuntu car cela a fonctionné sur notre machine sous Ubuntu 22.04.4 LTS
 
     steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
