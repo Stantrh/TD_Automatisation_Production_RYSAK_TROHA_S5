@@ -89,7 +89,7 @@ Nous avons découvert que pour les tests ou du code coverage, on peut spécifier
 Dans notre cas, il sera généré dans [log/php-coverage-report](log/php-coverage-report).
 3) Ensuite, pour exécuter le code coverage sur notre machine, il suffit d'abord d'installer les dépendances via le [makefile](makefile) `make install`. 
 Ensuite, lancer le serveur php avec `make start`.
-Puis faire la commande : ```XDEBUG_MODE=coverage vendor/bin/phpunit```. La commmande signifie : 
+Puis faire la commande : ```XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml```. La commmande signifie : 
     - ***XDEBUG_MODE=coverage*** : On spécifie à l'extension xdebug de passer en mode coverage de code. Sinon on obtient un warning. On peut alternativement modifier le fichier php.ini sur sa machine mais ce n'est pas aussi pratique.
 ![](ressources/image-1.png)
 
