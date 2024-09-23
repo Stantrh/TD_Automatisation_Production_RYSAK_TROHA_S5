@@ -155,7 +155,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
     - name: ajout du rapport de couverture 
       uses: irongut/CodeCoverageSummary@v1.3.0 # action github qu'on utilise 
       with:
-        filename: log/coverage-cobertura.xml
+        filename: coverage/coverage-cobertura.xml
         badge: true
         format : markdown
         output : both
