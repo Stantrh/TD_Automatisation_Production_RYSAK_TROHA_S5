@@ -5,3 +5,4 @@ doc/*
 vendor
 log
 .phpunit.result.cache
+coverage/
