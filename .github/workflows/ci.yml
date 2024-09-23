@@ -43,3 +43,9 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         badge: true
         format : markdown
         output : both
+
+    - name : Ajouter le rapport en summary github
+      run : |
+        echo "## Résumé de la couverture de code" >> $GITHUB_STEP_SUMMARY
+        cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+
