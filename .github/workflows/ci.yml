@@ -28,24 +28,23 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         composer install  # Installe les dépendances via Composer
 
     - name: tests avec PHPUnit
-      run: |
+      run: | # on lance les tests via phpunit et la configuration <testsuite> de phpunit.xml
         vendor/bin/phpunit --configuration phpunit.xml
 
     - name: coverage avec Xdebug
-      run: |
+      run: | # on crée le dossier qui contiendra les rapports de coverage puis on lance phpunit en mode coverage avec XDEBUG
         mkdir -p coverage
-        vendor/bin/phpunit --configuration phpunit.xml
+        XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml
 
-    - name: Ajouter le rapport de couverture 
-      uses: irongut/CodeCoverageSummary@v1.3.0
+    - name: ajout du rapport de couverture 
+      uses: irongut/CodeCoverageSummary@v1.3.0 # action github qu'on utilise 
       with:
-        filename: coverage/coverage-cobertura.xml
+        filename: log/coverage-cobertura.xml
         badge: true
         format : markdown
         output : both
 
-    - name : Ajouter le rapport en summary github
+    - name : ajout du rapport au summary github
       run : |
         echo "## Résumé de la couverture de code" >> $GITHUB_STEP_SUMMARY
         cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
-
