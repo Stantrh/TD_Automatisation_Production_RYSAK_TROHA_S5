@@ -50,7 +50,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
     steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
     - name: Checkout code
-      uses: actions/checkout@v3  # On récupère le code source du repository grâce à une action github qui est prédéfinie
+      uses: actions/checkout@v4  # On récupère le code source du repository grâce à une action github qui est prédéfinie
 
     - name: PHP Set up
       uses: shivammathur/setup-php@v2  # On utilise encore une action prédéfinie pour configurer php
@@ -131,7 +131,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
     steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
     - name: Checkout code
-      uses: actions/checkout@v3 # On récupère le code source du repository grâce à une action github qui est prédéfinie
+      uses: actions/checkout@v4 # On récupère le code source du repository grâce à une action github qui est prédéfinie
 
     - name: PHP Set up
       uses: shivammathur/setup-php@v2  # On utilise encore une action prédéfinie pour configurer php
