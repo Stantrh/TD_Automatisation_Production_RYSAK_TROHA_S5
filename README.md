@@ -79,6 +79,8 @@ Voici des captures d'écrans montrant la réalisation des tests :
 
 ## TD 3 : Code Coverage
 
+Nous avons découvert que pour les tests ou du code coverage, on peut spécifier via l'option `--configuration` le fichier de configuration [phpunit.xml](phpunit.xml). Grâce à ça, la partie concernée du fichier (`<coverage></coverage>` ou `<testsuite></testsuite>`) va être utilisée par phpunit pour run les tests ou le coverage du code.
+
 #### Sur la machine
 
 1) Tout d'abord, il est nécessaire d'installer l'extension php **xdebug**. On le fait via `sudo apt install php-xdebug`. On peut vérifier qu'elle est bien en cours avec `php -m | grep xdebug`
@@ -87,16 +89,15 @@ Voici des captures d'écrans montrant la réalisation des tests :
 Dans notre cas, il sera généré dans [log/php-coverage-report](log/php-coverage-report).
 3) Ensuite, pour exécuter le code coverage sur notre machine, il suffit d'abord d'installer les dépendances via le [makefile](makefile) `make install`. 
 Ensuite, lancer le serveur php avec `make start`.
-Puis faire la commande : ```XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html log/php-coverage-report```. La commmande signifie : 
+Puis faire la commande : ```XDEBUG_MODE=coverage vendor/bin/phpunit```. La commmande signifie : 
     - ***XDEBUG_MODE=coverage*** : On spécifie à l'extension xdebug de passer en mode coverage de code. Sinon on obtient un warning. On peut alternativement modifier le fichier php.ini sur sa machine mais ce n'est pas aussi pratique.
 ![](ressources/image-1.png)
-    - ***--coverage-html log/php-coverage-report*** : On indique, comme vu dans [phpunit.xml](phpunit.xml) le chemin dans lequel sera généré le fichier html contenant le rapport du code coverage.
-    Normalement, l'exécution est plus longue en mode coverage et ressemble à ça : 
-    ![Success](ressources/sucess.png)
 
-4) Puis, les résultats sont disponibles dans [log/php-coverage-report](log/php-coverage-report/index.html) :
+4) Puis, les résultats sous forme html sont disponibles dans [log/php-coverage-report](log/php-coverage-report/index.html) (qui n'est pas push sur le repository car ignoré). Les résultats sont disponibles dans ce répertoire suite à la configuration que l'on a faite à l'étape 3 dans [phpunit.xml](phpunit.xml) pour la balise `<html>` :
 ![Resultats](ressources/resultats.png)
+Comme nous avions spécifié également une balise `<clover>` dans [phpunit.xml](phpunit.xml), un fichier [coverage-clover.xml](log/coverage-clover.xml) a également été créé.
+![alt text](image.png)  
 
 #### Sur github action
 
-Pour activer
+Nous avons découvert que lors des tests avec l'action phpunit, que ce soit en local sur notre machine ou avec les actions github, il est préférable d'utiliser le fichier de configuration [phpunit.xml](phpunit.xml).

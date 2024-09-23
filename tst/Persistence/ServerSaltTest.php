@@ -41,5 +41,23 @@ class ServerSaltTest extends TestCase
         Helper::rmDir($this->_path);
     }
 
+    public function testGeneration()
+    {
+        // generating new salt
+        ServerSalt::setStore(
+            new Filesystem(array('dir' => $this->_path))
+        );
+        $salt = ServerSalt::get();
+        // try setting a different path and resetting it
+        ServerSalt::setStore(
+            new Filesystem(array('dir' => $this->_otherPath))
+        );
+        $this->assertNotEquals($salt, ServerSalt::get());
+        ServerSalt::setStore(
+            new Filesystem(array('dir' => $this->_path))
+        );
+        $this->assertEquals($salt, ServerSalt::get());
+    }
+
 
 }
