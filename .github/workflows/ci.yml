@@ -42,4 +42,8 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         filename: coverage/cobertura.xml
         badge: true
         format : markdown
-   
+    - name: Ajouter Rapport de Couverture au Repository
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+       recreate: true
+       path: code-coverage-resultats.md
