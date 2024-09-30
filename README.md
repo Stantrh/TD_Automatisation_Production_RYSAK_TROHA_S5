@@ -166,3 +166,11 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
 ```
+
+
+
+## TD 4 : Analyse statique
+
+### En local sur notre machine
+
+##### - PHPCS
