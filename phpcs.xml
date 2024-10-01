@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset name="phpCS pour PrivateBin">
+  <file>lib</file>
+
+  <!-- Ici on met les standards que l'on veut respecter -->
+  <rule ref="PSR1"/>
+  <rule ref="PSR2"/>
+  <rule ref="PSR12"/>
+
+    <!-- On spécifie l'extension des fichiers qu'on veut analyser-->
+  <extensions>
+    <extension name="php"/>
+  </extensions>
+
+  <!-- Coloration des rapports -->
+  <arg name="colors"/>
+
+  <!-- Pour avoir un rapport complet-->
+  <arg name="report" value="full"/>
+
+</ruleset>
