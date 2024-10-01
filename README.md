@@ -171,6 +171,54 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
 ## TD 4 : Analyse statique
 
-### En local sur notre machine
+### - PHPCS
 
-##### - PHPCS
+##### En local sur la machine
+
+Tout d'abord, avant de pouvoir utiliser phpcs, on doit l'installer sur le projet à l'aide de composer : 
+```bash
+sudo apt install php-xmlwriter
+composer require --dev "squizlabs/php_codesniffer=3.*"
+```
+Nous avons choisi de configurer phpcs à l'aide d'un fichier et non en ligne de commandes.
+Pour ce faire, on doit créer un fichier du nom `.phpcs.xml`, `phpcs.xml`, `.phpcs.xml.dist`, ou `phpcs.xml.dist`. 
+Nous avons choisi de l'appeler `phpcs.xml` et de le placer à la racine du projet.
+
+[phpcs.xml](phpcs.xml) (commenté) : 
+```xml
+<?xml version="1.0"?>
+<ruleset name="phpCS pour PrivateBin">
+  <file>lib</file> <!-- Le dossier sur lequel on veut utiliser phpcs-->
+
+  <!-- Ici on met les standards que l'on veut respecter -->
+  <rule ref="PSR1"/>
+  <rule ref="PSR2"/>
+  <rule ref="PSR12"/>
+
+    <!-- On spécifie l'extension des fichiers qu'on veut analyser-->
+  <extensions>
+    <extension name="php"/>
+  </extensions>
+
+  <!-- Coloration des rapports -->
+  <arg name="colors"/>
+
+  <!-- Pour avoir un rapport complet-->
+  <arg name="report" value="full"/>
+
+</ruleset>
+```
+Ensuite, il suffit de lancer **phpcs**`./vendor/bin/phpcs` depuis la racine du projet.
+On obient :
+![phpcs_result](ressources/phpcs_exec.png)
+On voit donc chaque erreur et warning par fichier php situé dans [lib/](lib/). 
+
+
+### - PHPMD
+##### En local sur la machine
+
+
+### - PHPStan
+
+### Correction des erreurs détectées par l'outil
+

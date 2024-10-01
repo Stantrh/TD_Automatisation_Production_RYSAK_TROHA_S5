@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="phpCS Utilisation locale">
+<ruleset name="phpCS pour PrivateBin">
   <file>lib</file>
 
   <!-- Ici on met les standards que l'on veut respecter -->
