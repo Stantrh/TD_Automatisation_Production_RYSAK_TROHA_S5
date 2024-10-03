@@ -15,5 +15,13 @@
     <!-- Import the entire cyclomatic complexity rule -->
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity" />
     
+    <!-- Pareil pour règles de tailles -->
+    <rule ref="rulesets/codesize.xml" />
+
+    <!-- Et pour règles de nommage -->
+    <rule ref="rulesets/naming.xml" />
+
+    <!-- EvalExpression Rule qui est inclue dans controversial -->
+    <rule ref="rulesets/controversial.xml" />
 </ruleset>
 
