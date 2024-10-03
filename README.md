@@ -171,7 +171,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
 ## TD 4 : Analyse statique
 
-### - PHPCS
+### - PHPCS (PHP Code Sniffer)
 
 ##### En local sur la machine
 
@@ -216,14 +216,14 @@ On obient :
 On voit donc chaque erreur et warning par fichier php situé dans [lib/](lib/). 
 
 
-### - PHPMD
+### - PHPMD (PHP Mess Detector)
 ##### En local sur la machine
 Avant de pouvoir utiliser PHPMD, on doit l'ajouter au projet.
 ```bash
 composer require --dev "phpmd/phpmd=@stable"
 ```
 
-Identiquement à [phpcs](#--phpcs), nous avons choisi de directement faire la configuration via un fichier plutôt que dans la ligne de commande. Il nous sera utile pour déployer **phpcs** sur les actions github.
+Identiquement à [phpcs](#--phpcs-php-code-sniffer), nous avons choisi de directement faire la configuration via un fichier plutôt que dans la ligne de commande. Il nous sera utile pour déployer **phpcs** sur les actions github.
 Le fichier en question doit être nommé [ruleset.xml](ruleset.xml) :
 ```xml
 <?xml version="1.0"?>
@@ -264,14 +264,64 @@ Puis, pour lancer la détection :
 ![screen_exec_phpmd](ressources/exec_phpmd.png)
 On obtient bien les règles qui sont violées pour chaque fichier php situé dans [.lib](lib/) (ex : conventions de nommage, complexité cyclomatique etc.).
 
-### - PHPStan
+### - PHPStan (PHP Static Analysis Tool )
 ##### En local sur la machine
 Comme pour les deux outils précédents, on doit inclure **PHPStan** dans le projet à l'aide de composer : 
 ```bash
 composer require --dev phpstan/phpstan
 ```
+Nous avons encore décidé de créer un fichier [phpstan.neon](phpstan.neon) pour la configuration plutôt que de la faire en ligne de commmande. 
+[phpstan.neon](phpstan.neon) : 
+```neon
+parameters:
+  level: 5 # niveau d'analyse (de 0 a 9, 9 étant très strict)
+  paths: # on inclue les dossiers à tester dont le code est écrit à la main (inutile de vérifier le vendor)
+    - lib
+    - tst
+```
+
+Il suffit maintenant de lancer la détection avec : 
+```bash
+./vendor/bin/phpstan analyse -c phpstan.neon
+```
+
+Voici divers exemples selon le niveau d'exigence spécifié dans [phpstan.neon](phpstan.neon) : 
+
+##### Niveau 0 (le moins strict)
+![exec_lvl0](ressources/phpstan_lvl0.png)
+![res_lvl0](ressources/phpstan_res_lvl0.png)
+##### Niveau 5 (intermédiaire)
+![exec_lvl5](ressources/phpstan_lvl5.png)
+![res_lvl5](ressources/phpstan_res_lvl5.png)
+##### Niveau 9 (niveau maximal)
+![exec_lvl9](ressources/phpstan_lvl9.png)
+![res_lvl9](ressources/phpstan_res_lvl9.png)
+
+On peut constater une grosse différence du nombre d'erreurs trouvées selon le niveau d'exigence spécifié dans le fichier de configuration.
+
+
+
 
 ### Actions Github pour ces outils
 
 ### Correction des erreurs détectées par l'outil
-
+Bonus : essai de résolution du package entraînant une exposition à une faille de sécurité.
+Après un `composer audit` on obtient :  
+```bash
+Found 1 security vulnerability advisory affecting 1 package:
++-------------------+----------------------------------------------------------------------------------+
+| Package           | aws/aws-sdk-php                                                                  |
+| Severity          | medium                                                                           |
+| CVE               | CVE-2023-51651                                                                   |
+| Title             | Potential URI resolution path traversal in the AWS SDK for PHP                   |
+| URL               | https://nvd.nist.gov/vuln/detail/CVE-2023-51651                                  |
+| Affected versions | >=3.0.0,<3.288.1                                                                 |
+| Reported at       | 2023-11-22T00:00:00+00:00                                                        |
++-------------------+----------------------------------------------------------------------------------+
+Found 1 abandoned package:
++-------------------+----------------------------------------------------------------------------------+
+| Abandoned Package | Suggested Replacement                                                            |
++-------------------+----------------------------------------------------------------------------------+
+| yzalis/identicon  | none                                                                             |
++-------------------+----------------------------------------------------------------------------------+
+```

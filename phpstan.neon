@@ -1,0 +1,5 @@
+parameters:
+  level: 9 # niveau d'analyse (de 0 a 9, 9 étant très strict)
+  paths: # on inclue les dossiers à tester dont le code est écrit à la main (inutile de vérifier le vendor)
+    - lib
+    - tst
