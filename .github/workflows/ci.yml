@@ -32,19 +32,25 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       run: |
         ./vendor/bin/phpcs > phpcs_report.txt || true
         echo "## PHP CodeSniffer Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
         cat phpcs_report.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
 
-    - name: Exécuter PHP Mess Detector
+    - name: PHP Mess Detector
       run: |
         ./vendor/bin/phpmd ./lib ansi ruleset.xml > phpmd_report.txt || true
         echo "## PHP Mess Detector Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
         cat phpmd_report.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
 
-    - name: Exécuter PHPStan
+    - name: PHPStan
       run: |
         ./vendor/bin/phpstan analyse -c phpstan.neon > phpstan_report.txt || true
         echo "## PHPStan Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
         cat phpstan_report.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
 
     - name: Tests PHPUnit
       run: | # on lance les tests via phpunit et la configuration <testsuite> de phpunit.xml
