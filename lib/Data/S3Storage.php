@@ -228,7 +228,7 @@ class S3Storage extends AbstractData
         $name = $this->_getKey($pasteid);
 
         try {
-            $comments = $this->_listAllObjects($name . '/discussion/');
+            $comments = $this->listAllObjects($name . '/discussion/');
             foreach ($comments as $comment) {
                 try {
                     $this->_client->deleteObject(array(
