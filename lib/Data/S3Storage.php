@@ -1,4 +1,5 @@
 <?php
+
 /**
  * S3.php
  *
@@ -47,7 +48,7 @@ class S3Storage extends AbstractData
      * @access private
      * @var    S3Client
      */
-    private $_client = null;
+    private $client = null;
 
     /**
      * S3 client options
@@ -55,7 +56,7 @@ class S3Storage extends AbstractData
      * @access private
      * @var    array
      */
-    private $_options = array();
+    private $options = array();
 
     /**
      * S3 bucket
@@ -63,7 +64,7 @@ class S3Storage extends AbstractData
      * @access private
      * @var    string
      */
-    private $_bucket = null;
+    private $bucket = null;
 
     /**
      * S3 prefix for all PrivateBin data in this bucket
@@ -71,7 +72,7 @@ class S3Storage extends AbstractData
      * @access private
      * @var    string
      */
-    private $_prefix = '';
+    private $prefix = '';
 
     /**
      * instantiates a new S3 data backend.
@@ -100,7 +101,8 @@ class S3Storage extends AbstractData
             $this->_options['credentials']['secret'] = $options['secretkey'];
         }
         if (is_array($options) && array_key_exists('use_path_style_endpoint', $options)) {
-            $this->_options['use_path_style_endpoint'] = filter_var($options['use_path_style_endpoint'], FILTER_VALIDATE_BOOLEAN);
+            $this->_options['use_path_style_endpoint'] = filter_var($options
+            ['use_path_style_endpoint'], FILTER_VALIDATE_BOOLEAN);
         }
         if (is_array($options) && array_key_exists('bucket', $options)) {
             $this->_bucket = $options['bucket'];
@@ -119,7 +121,7 @@ class S3Storage extends AbstractData
      * @param $prefix string with prefix
      * @return array all objects in the given prefix
      */
-    private function _listAllObjects($prefix)
+    private function listAllObjects($prefix)
     {
         $allObjects = array();
         $options    = array(
@@ -146,7 +148,7 @@ class S3Storage extends AbstractData
      * @param $pasteid string to get the key for
      * @return string
      */
-    private function _getKey($pasteid)
+    private function getKey($pasteid)
     {
         if ($this->_prefix != '') {
             return $this->_prefix . '/' . $pasteid;
@@ -164,7 +166,7 @@ class S3Storage extends AbstractData
      * @param $payload array to store
      * @return bool true if successful, otherwise false.
      */
-    private function _upload($key, $payload)
+    private function upload($key, $payload)
     {
         $metadata = array_key_exists('meta', $payload) ? $payload['meta'] : array();
         unset($metadata['attachment'], $metadata['attachmentname'], $metadata['salt']);
@@ -415,7 +417,7 @@ class S3Storage extends AbstractData
     /**
      * @inheritDoc
      */
-    protected function _getExpiredPastes($batchsize)
+    protected function getExpiredPastes($batchsize)
     {
         $expired = array();
         $now     = time();

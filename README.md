@@ -3,7 +3,7 @@
 **RYSAK** Hugo --> hugo.rysak4@etu.univ-lorraine.fr  
 **TROHA** Stanislas --> stanislas.troha8@etu.univ-lorraine.fr
 
-
+_ _ _ 
 ## TD 1
 Grâce au TD1, nous avons déjà pu comprendre le fonctionnement de php ainsi que de ses extensions (sqlite3, mbstring, gd). Nous avons également découvert phpunit qui permet de faire des tests unitaire contenus dans divers fichiers dans un dossier (tst).
 Nouvelle commande utile découverte : `php -m` pour lister les extensions php en cours de fonctionnement.
@@ -21,6 +21,8 @@ test:
 	./vendor/bin/phpunit tst
 ```
 On peut simplement faire `make install`pour installer les dépendances de PrivateBin avec composer, `make start` pour lancer le serveur php, puis `make test` pour lancer les tests avec phpunit dans le dossier *tst*.
+
+_ _ _ 
 
 ## TD 2
 Nous avons découvert les actions avec les workflows github. 
@@ -75,7 +77,7 @@ Voici des captures d'écrans montrant la réalisation des tests :
 
 
 
-
+_ _ _ 
 
 ## TD 3 : Code Coverage
 
@@ -169,6 +171,8 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
 
 
+_ _ _ 
+
 ## TD 4 : Analyse statique
 
 ### - PHPCS (PHP Code Sniffer)
@@ -250,7 +254,7 @@ Le fichier en question doit être nommé [ruleset.xml](ruleset.xml) :
     <!-- Et pour règles de nommage -->
     <rule ref="rulesets/naming.xml" />
 
-    <!-- EvalExpression Rule qui est inclue dans controversial -->
+    <!-- EvalExpression Rule qui est incluse dans controversial -->
     <rule ref="rulesets/controversial.xml" />
 </ruleset>
 
@@ -326,8 +330,108 @@ Pour ces actions, il suffit de modifier le fichier [ci.yml](.github/workflows/ci
 Pour l'instant nous n'avons réussi qu'à ajouter la sortie de **PHPCS** au summary github car les formats de **phpstan** et **phpmd** ne conviennent pas et sont trop longs.
 ![phpcs_summary_github](ressources/phpcs_summary_github.png)
 
-### Correction des erreurs détectées par l'outil
-Bonus : essai de résolution du package entraînant une exposition à une faille de sécurité.
+### Correction des erreurs détectées par outil
+
+##### PHPCS
+Les 5 erreurs corrigées proviennent du même fichier  :
+<u>FILE</u>: *[lib/Data/S3Storage.php](lib/Data/S3Storage.php)*
+```bash
+FOUND 5 ERRORS AND 5 WARNINGS AFFECTING 10 LINES
+--------------------------------------------------------------------------------------------------------------------
+   1 | ERROR   | [x] Header blocks must be separated by a single blank line
+  50 | WARNING | [ ] Property name "$_client" should not be prefixed with an underscore to indicate visibility
+  58 | WARNING | [ ] Property name "$_options" should not be prefixed with an underscore to indicate visibility
+  66 | WARNING | [ ] Property name "$_bucket" should not be prefixed with an underscore to indicate visibility
+  74 | WARNING | [ ] Property name "$_prefix" should not be prefixed with an underscore to indicate visibility
+ 103 | WARNING | [ ] Line exceeds 120 characters; contains 130 characters
+ 122 | ERROR   | [ ] Method name "_listAllObjects" must not be prefixed with an underscore to indicate visibility
+ 149 | ERROR   | [ ] Method name "_getKey" must not be prefixed with an underscore to indicate visibility
+ 167 | ERROR   | [ ] Method name "_upload" must not be prefixed with an underscore to indicate visibility
+ 418 | ERROR   | [ ] Method name "_getExpiredPastes" must not be prefixed with an underscore to indicate visibility
+--------------------------------------------------------------------------------------------------------------------
+```
+Une fois les erreurs et warnings corrigés, [lib/Data/S3Storage.php](lib/Data/S3Storage.php) n'apparaît plus dans la sortie de **phpcs** :
+![S3Storage.php](ressources/S3Storage.png)
+
+
+
+##### PHPMD
+4 violations proviennent du même fichier :
+<u>FILE</u>: [lib/Model/Comment.php](lib/Model/Comment.php)
+```bash
+----------------------------------------------------------------------------------------------------------
+ 26  | VIOLATION | The property $_paste is not named in camelCase.
+ 132 | VIOLATION | Avoid variables with short names like $id. Configured minimum length is 3.
+ 161 | VIOLATION | The method _sanitize is not named in camelCase.
+ 182 | VIOLATION | Avoid variables with short names like $vh. Configured minimum length is 3.
+```
+
+L'autre violation provient de :
+<u>FILE</u>: [lib/Filter.php](lib/Filter.php)
+```bash
+---------------------------------------------------------------------------------------------------
+ 67  | VIOLATION | Avoid variables with short names like $i. Configured minimum length is 3.
+```
+
+Une fois ces modifications faites, on constate qu'il n'y a plus aucune violation, ni dans [lib/Model/Comment.php](lib/Model/Comment.php) ni dans [lib/Filter.php](lib/Filter.php) puisque les classes n'apparaissent plus dans la sortie de **phpmd** :
+![phpmd_violations](ressources/phpmd_violations.png)
+
+
+
+
+
+
+##### PHPSTAN
+1.
+``` bash
+ ------ ------------------------------------------------------------------------------------------ 
+  Line   lib/Model.php                                                                             
+ ------ ------------------------------------------------------------------------------------------ 
+  44     Class PrivateBin\Configuration referenced with incorrect case: PrivateBin\configuration.  
+ ------ ------------------------------------------------------------------------------------------
+```
+
+2.
+```bash
+ ------ -------------------------------------------------------------------------------------------------- 
+  Line   lib/Data/Database.php                                                                             
+ ------ -------------------------------------------------------------------------------------------------- 
+  60     PHPDoc tag @return has invalid value (): Unexpected token "\n     ", expected type at offset 150  
+ ------ --------------------------------------------------------------------------------------------------
+```
+
+
+3.
+```bash
+ ------ -------------------------------------------------------------------------------------------------- 
+  Line   lib/Data/Filesystem.php                                                                           
+ ------ -------------------------------------------------------------------------------------------------- 
+  70     PHPDoc tag @return has invalid value (): Unexpected token "\n     ", expected type at offset 127  
+ ------ --------------------------------------------------------------------------------------------------
+```
+
+4. 
+```bash
+ ------ -------------------------------------------------------------------------------------------------- 
+  Line   lib/Data/GoogleCloudStorage.php                                                                   
+ ------ -------------------------------------------------------------------------------------------------- 
+  52     PHPDoc tag @return has invalid value (): Unexpected token "\n     ", expected type at offset 138  
+ ------ --------------------------------------------------------------------------------------------------
+```
+
+5.
+```bash
+ ------ --------------------------------------------------------------------------------------------------------- 
+  Line   lib/Filter.php                                                                                           
+ ------ --------------------------------------------------------------------------------------------------------- 
+  50     Parameter #1 $messageId of static method PrivateBin\I18n::_() expects string, array<int, string> given.  
+ ------ --------------------------------------------------------------------------------------------------------- 
+```
+
+Une fois ces 5 erreurs résolues, on peut voir que les noms des classes concernées n'apparaîssent plus dans la sortie de **phpstan**, ce qui veut dire qu'elles sont bien corrigées : 
+![phpstan_erreurs](ressources/phpstan_erreurs.png)
+
+#### Bonus : Résolution du package aws entraînant une exposition à un attaque de sécurité.
 Après un `composer audit` on obtient :  
 ```bash
 Found 1 security vulnerability advisory affecting 1 package:
@@ -362,4 +466,4 @@ Found 1 abandoned package:
 | yzalis/identicon  | none                                                                             |
 +-------------------+----------------------------------------------------------------------------------+
 ```
-Seul un package est détecté comme obsolète (il n'est plus supporté), mais s'il est dans le projet c'est qu'il doit être utile.
+Seul un package est détecté comme obsolète (il n'est plus supporté), mais s'il est dans le projet c'est qu'il doit être utile donc nous ne nous en occuperons pas.

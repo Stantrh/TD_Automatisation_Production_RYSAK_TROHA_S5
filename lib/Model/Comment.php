@@ -31,7 +31,7 @@ class Comment extends AbstractModel
      * @access private
      * @var Paste
      */
-    private $_paste;
+    private $paste;
 
     /**
      * Store the comment's data.
@@ -119,22 +119,22 @@ class Comment extends AbstractModel
      */
     public function getPaste()
     {
-        return $this->_paste;
+        return $this->paste;
     }
 
     /**
      * Set parent ID.
      *
      * @access public
-     * @param string $id
+     * @param string $pasteId
      * @throws Exception
      */
-    public function setParentId($id)
+    public function setParentId($pasteId)
     {
-        if (!self::isValidId($id)) {
+        if (!self::isValidId($pasteId)) {
             throw new Exception('Invalid paste ID.', 65);
         }
-        $this->_data['parentid'] = $id;
+        $this->_data['parentid'] = $pasteId;
     }
 
     /**
@@ -158,7 +158,7 @@ class Comment extends AbstractModel
      * @param  array $data
      * @return array
      */
-    protected function _sanitize(array $data)
+    protected function sanitize(array $data)
     {
         // we generate an icon based on a SHA512 HMAC of the users IP, if configured
         $icon = $this->_conf->getKey('icon');
@@ -179,9 +179,9 @@ class Comment extends AbstractModel
                 ));
                 $pngdata   = $jdenticon->getImageDataUri('png');
             } elseif ($icon == 'vizhash') {
-                $vh      = new Vizhash16x16();
+                $vizhashInstance = new Vizhash16x16();
                 $pngdata = 'data:image/png;base64,' . base64_encode(
-                    $vh->generate($hmac)
+                    $vizhashInstance->generate($hmac)
                 );
             }
             if ($pngdata != '') {

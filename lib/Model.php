@@ -39,7 +39,7 @@ class Model
     /**
      * Factory constructor.
      *
-     * @param configuration $conf
+     * @param Configuration $conf
      */
     public function __construct(Configuration $conf)
     {

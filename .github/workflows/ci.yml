@@ -39,7 +39,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
     - name: PHP Mess Detector
       run: |
-        ./vendor/bin/phpmd ./lib github ansi ruleset.xml > phpmd_report.txt || true
+        ./vendor/bin/phpmd ./lib ansi ruleset.xml > phpmd_report.txt || true
 
 
     - name: PHPStan

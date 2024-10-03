@@ -47,8 +47,11 @@ class Filter
             default:
                 $unit = rtrim($matches[2], 's');
         }
-        return I18n::_(array('%d ' . $unit, '%d ' . $unit . 's'), (int) $matches[1]);
+    
+        // Assuming I18n::_() can handle the format and pluralization
+        return I18n::_('%d ' . $unit, (int) $matches[1]);
     }
+    
 
     /**
      * format a given number of bytes in IEC 80000-13:2008 notation (localized)
@@ -61,11 +64,11 @@ class Filter
     public static function formatHumanReadableSize($size)
     {
         $iec = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
-        $i   = 0;
+        $iterator   = 0;
         while (($size / 1024) >= 1) {
             $size = $size / 1024;
-            ++$i;
+            ++$iterator;
         }
-        return number_format($size, ($i ? 2 : 0), '.', ' ') . ' ' . I18n::_($iec[$i]);
+        return number_format($size, ($iterator ? 2 : 0), '.', ' ') . ' ' . I18n::_($iec[$iterator]);
     }
 }
