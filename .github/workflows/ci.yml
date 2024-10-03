@@ -30,7 +30,11 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
     - name: PHP CodeSniffer
       run: |
-        ./vendor/bin/phpcs > phpcs_report.txt || true
+        ./vendor/bin/phpcs --report=source > phpcs_report.txt || true
+        echo "## PHP CodeSniffer Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat phpcs_report.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
 
 
     - name: PHP Mess Detector
