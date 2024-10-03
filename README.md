@@ -303,6 +303,28 @@ On peut constater une grosse différence du nombre d'erreurs trouvées selon le 
 
 
 ### Actions Github pour ces outils
+Pour ces actions, il suffit de modifier le fichier [ci.yml](.github/workflows/ci.yml) en ajoutant trois nouvelles étapes (**steps**), correspondant respectivement aux trois outils (**phpcs, phpmd, phpstan**). Les étapes ont été insérées dans le même **job** utilisé jusqu'à présent.
+```yml
+    - name: PHP CodeSniffer
+      run: |
+        ./vendor/bin/phpcs --report=source > phpcs_report.txt || true
+        echo "## PHP CodeSniffer Report" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat phpcs_report.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+
+
+    - name: PHP Mess Detector
+      run: |
+        ./vendor/bin/phpmd ./lib github ansi ruleset.xml > phpmd_report.txt || true
+
+
+    - name: PHPStan
+      run: |
+        ./vendor/bin/phpstan analyse -c phpstan.neon --error-format=github > phpstan_report.txt || true
+```
+Pour l'instant nous n'avons réussi qu'à ajouter la sortie de **PHPCS** au summary github car les formats de **phpstan** et **phpmd** ne conviennent pas et sont trop longs.
+![phpcs_summary_github](ressources/phpcs_summary_github.png)
 
 ### Correction des erreurs détectées par l'outil
 Bonus : essai de résolution du package entraînant une exposition à une faille de sécurité.
@@ -325,3 +347,19 @@ Found 1 abandoned package:
 | yzalis/identicon  | none                                                                             |
 +-------------------+----------------------------------------------------------------------------------+
 ```
+On peut voir que la CVE concerne les versions comprises entre la **3.0.0** et la **3.288.1**. Or, pour ce projet, la version **3.254.0** est utilisée, elle est donc concernée. Cela rend l'application vulnérable.
+Pour résoudre ce problème, il suffit de passer à une version qui n'est pas concernée par cette CVE :
+```bash
+composer require aws/aws-sdk-php:^3.288.1
+```
+Maintenant, avec un `composer audit`, aucun problème de sécurité n'est détecté (et tous les outils utilisés jusqu'à présent donnent les mêmes résultats): 
+```bash
+No security vulnerability advisories found.
+Found 1 abandoned package:
++-------------------+----------------------------------------------------------------------------------+
+| Abandoned Package | Suggested Replacement                                                            |
++-------------------+----------------------------------------------------------------------------------+
+| yzalis/identicon  | none                                                                             |
++-------------------+----------------------------------------------------------------------------------+
+```
+Seul un package est détecté comme obsolète (il n'est plus supporté), mais s'il est dans le projet c'est qu'il doit être utile.
