@@ -41,10 +41,6 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
     - name: PHPStan
       run: |
         ./vendor/bin/phpstan analyse -c phpstan.neon --error-format=github > phpstan_report.txt || true
-        echo "## PHPStan Report" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        cat phpstan_report.txt >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
 
     - name: Tests PHPUnit
       run: | # on lance les tests via phpunit et la configuration <testsuite> de phpunit.xml
