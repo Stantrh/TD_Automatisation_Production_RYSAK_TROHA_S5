@@ -180,6 +180,8 @@ Tout d'abord, avant de pouvoir utiliser phpcs, on doit l'installer sur le projet
 sudo apt install php-xmlwriter
 composer require --dev "squizlabs/php_codesniffer=3.*"
 ```
+On peut voir qu'avant d'ajouter phpcs au projet, il faut installer sur la machine l'extension php **xmlwriter** qui est une extension utilisée par phpcs.
+
 Nous avons choisi de configurer phpcs à l'aide d'un fichier et non en ligne de commandes.
 Pour ce faire, on doit créer un fichier du nom `.phpcs.xml`, `phpcs.xml`, `.phpcs.xml.dist`, ou `phpcs.xml.dist`. 
 Nous avons choisi de l'appeler `phpcs.xml` et de le placer à la racine du projet.
@@ -216,9 +218,60 @@ On voit donc chaque erreur et warning par fichier php situé dans [lib/](lib/).
 
 ### - PHPMD
 ##### En local sur la machine
+Avant de pouvoir utiliser PHPMD, on doit l'ajouter au projet.
+```bash
+composer require --dev "phpmd/phpmd=@stable"
+```
 
+Identiquement à [phpcs](#--phpcs), nous avons choisi de directement faire la configuration via un fichier plutôt que dans la ligne de commande. Il nous sera utile pour déployer **phpcs** sur les actions github.
+Le fichier en question doit être nommé [ruleset.xml](ruleset.xml) :
+```xml
+<?xml version="1.0"?>
+<?xml version="1.0"?>
+<ruleset name="My first PHPMD rule set"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
+                     http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="
+                     http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+        My custom rule set that checks my code...
+    </description>
+     <!-- Import the entire unused code rule set -->
+    <rule ref="rulesets/unusedcode.xml" />
+
+    <!-- Import the entire cyclomatic complexity rule -->
+    <rule ref="rulesets/codesize.xml/CyclomaticComplexity" />
+    
+    <!-- Pareil pour règles de tailles -->
+    <rule ref="rulesets/codesize.xml" />
+
+    <!-- Et pour règles de nommage -->
+    <rule ref="rulesets/naming.xml" />
+
+    <!-- EvalExpression Rule qui est inclue dans controversial -->
+    <rule ref="rulesets/controversial.xml" />
+</ruleset>
+
+```
+Les règles importées sont celles données par l'exemple sur la doc de phpmd ainsi que celles présentes dans le cours.
+
+Puis, pour lancer la détection : 
+```bash
+./vendor/bin/phpmd ./lib ansi ruleset.xml
+```
+![screen_exec_phpmd](ressources/exec_phpmd.png)
+On obtient bien les règles qui sont violées pour chaque fichier php situé dans [.lib](lib/) (ex : conventions de nommage, complexité cyclomatique etc.).
 
 ### - PHPStan
+##### En local sur la machine
+Comme pour les deux outils précédents, on doit inclure **PHPStan** dans le projet à l'aide de composer : 
+```bash
+composer require --dev phpstan/phpstan
+```
+
+### Actions Github pour ces outils
 
 ### Correction des erreurs détectées par l'outil
 
