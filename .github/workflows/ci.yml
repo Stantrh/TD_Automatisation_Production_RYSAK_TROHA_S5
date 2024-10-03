@@ -30,23 +30,15 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
     - name: PHP CodeSniffer
       run: |
-        ./vendor/bin/phpcs > phpcs_report.txt || true
-        echo "## PHP CodeSniffer Report" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        cat phpcs_report.txt >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
+        ./vendor/bin/phpcs
 
     - name: PHP Mess Detector
       run: |
-        ./vendor/bin/phpmd ./lib ansi ruleset.xml > phpmd_report.txt || true
-        echo "## PHP Mess Detector Report" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        cat phpmd_report.txt >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
+        ./vendor/bin/phpmd ./lib ansi ruleset.xml
 
     - name: PHPStan
       run: |
-        ./vendor/bin/phpstan analyse -c phpstan.neon > phpstan_report.txt || true
+        ./vendor/bin/phpstan analyse -c phpstan.neon --error-format=github > phpstan_report.txt || true
         echo "## PHPStan Report" >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
         cat phpstan_report.txt >> $GITHUB_STEP_SUMMARY
