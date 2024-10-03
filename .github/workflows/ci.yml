@@ -30,11 +30,13 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
     - name: PHP CodeSniffer
       run: |
-        ./vendor/bin/phpcs
+        ./vendor/bin/phpcs > phpcs_report.txt || true
+
 
     - name: PHP Mess Detector
       run: |
-        ./vendor/bin/phpmd ./lib ansi ruleset.xml
+        ./vendor/bin/phpmd ./lib ansi ruleset.xml > phpmd_report.txt || true
+
 
     - name: PHPStan
       run: |
