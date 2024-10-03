@@ -36,10 +36,6 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
     - name: PHP Mess Detector
       run: |
         ./vendor/bin/phpmd ./lib github ansi ruleset.xml > phpmd_report.txt || true
-        echo "## PHP Mess Detector Report" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        cat phpmd_report.txt >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
 
 
     - name: PHPStan
