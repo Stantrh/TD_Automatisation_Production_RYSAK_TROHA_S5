@@ -61,11 +61,11 @@ class Filter
     public static function formatHumanReadableSize($size)
     {
         $iec = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
-        $i   = 0;
+        $iter   = 0;
         while (($size / 1024) >= 1) {
             $size = $size / 1024;
-            ++$i;
+            ++$iter;
         }
-        return number_format($size, ($i ? 2 : 0), '.', ' ') . ' ' . I18n::_($iec[$i]);
+        return number_format($size, ($iter ? 2 : 0), '.', ' ') . ' ' . I18n::_($iec[$iter]);
     }
 }

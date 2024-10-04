@@ -356,27 +356,31 @@ Une fois les erreurs et warnings corrigés, [lib/Data/S3Storage.php](lib/Data/S3
 
 
 ##### PHPMD
-4 violations proviennent du même fichier :
-<u>FILE</u>: [lib/Model/Comment.php](lib/Model/Comment.php)
+3 violations proviennent du même fichier :
+<u>FILE</u>: [lib/YourlsProxy.php](lib/YourlsProxy.php)
 ```bash
-----------------------------------------------------------------------------------------------------------
- 26  | VIOLATION | The property $_paste is not named in camelCase.
- 132 | VIOLATION | Avoid variables with short names like $id. Configured minimum length is 3.
- 161 | VIOLATION | The method _sanitize is not named in camelCase.
- 182 | VIOLATION | Avoid variables with short names like $vh. Configured minimum length is 3.
+--------------------------------------------------------------------------------------------------------
+ 23  | VIOLATION | The property $_error is not named in camelCase.
+ 23  | VIOLATION | The property $_url is not named in camelCase.
+ 56  | VIOLATION | The variable $yourls_api_url is not named in camelCase.
 ```
 
-L'autre violation provient de :
+Une autre violation provient de :
+<u>FILE</u>: [lib/View.php](lib/View.php)
+```bash
+-------------------------------------------------------------------------------------------------
+ 22  | VIOLATION | The property $_variables is not named in camelCase.
+```
+
+La dernière violation provient de : 
 <u>FILE</u>: [lib/Filter.php](lib/Filter.php)
 ```bash
 ---------------------------------------------------------------------------------------------------
- 67  | VIOLATION | Avoid variables with short names like $i. Configured minimum length is 3.
-```
+ 64  | VIOLATION | Avoid variables with short names like $i. Configured minimum length is 3.
+``` 
 
-Une fois ces modifications faites, on constate qu'il n'y a plus aucune violation, ni dans [lib/Model/Comment.php](lib/Model/Comment.php) ni dans [lib/Filter.php](lib/Filter.php) puisque les classes n'apparaissent plus dans la sortie de **phpmd** :
+Une fois ces modifications faites, on constate qu'il n'y a plus aucune violation, ni dans [lib/YourlsProxy.php](lib/YourlsProxy.php) ni dans [lib/View.php](lib/View.php) ou encore [lib/Filter.php](lib/Filter.php) puisque les classes n'apparaissent plus dans la sortie de **phpmd** :
 ![phpmd_violations](ressources/phpmd_violations.png)
-
-
 
 
 

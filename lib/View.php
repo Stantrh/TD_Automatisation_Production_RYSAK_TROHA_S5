@@ -27,7 +27,7 @@ class View
      * @access private
      * @var    array
      */
-    private $_variables = array();
+    private $variables = array();
 
     /**
      * assign variables to be used inside of the template
@@ -38,7 +38,7 @@ class View
      */
     public function assign($name, $value)
     {
-        $this->_variables[$name] = $value;
+        $this->variables[$name] = $value;
     }
 
     /**
@@ -55,7 +55,7 @@ class View
         if (!file_exists($path)) {
             throw new Exception('Template ' . $template . ' not found!', 80);
         }
-        extract($this->_variables);
+        extract($this->variables);
         include $path;
     }
 }

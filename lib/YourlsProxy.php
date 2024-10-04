@@ -28,7 +28,7 @@ class YourlsProxy
      * @access private
      * @var    string
      */
-    private $_error = '';
+    private $error = '';
 
     /**
      * shortened URL
@@ -36,7 +36,7 @@ class YourlsProxy
      * @access private
      * @var    string
      */
-    private $_url = '';
+    private $url = '';
 
     /**
      * constructor
@@ -49,18 +49,18 @@ class YourlsProxy
     public function __construct(Configuration $conf, $link)
     {
         if (strpos($link, $conf->getKey('basepath') . '?') === false) {
-            $this->_error = 'Trying to shorten a URL that isn\'t pointing at our instance.';
+            $this->error = 'Trying to shorten a URL that isn\'t pointing at our instance.';
             return;
         }
 
-        $yourls_api_url = $conf->getKey('apiurl', 'yourls');
-        if (empty($yourls_api_url)) {
-            $this->_error = 'Error calling YOURLS. Probably a configuration issue, like wrong or missing "apiurl" or "signature".';
+        $yourlsApiUrl = $conf->getKey('apiurl', 'yourls');
+        if (empty($yourlsApiUrl)) {
+            $this->error = 'Error calling YOURLS. Probably a configuration issue, like wrong or missing "apiurl" or "signature".';
             return;
         }
 
         $data = file_get_contents(
-            $yourls_api_url, false, stream_context_create(
+            $yourlsApiUrl, false, stream_context_create(
                 array(
                     'http' => array(
                         'method'  => 'POST',
@@ -80,7 +80,7 @@ class YourlsProxy
         try {
             $data = Json::decode($data);
         } catch (Exception $e) {
-            $this->_error = 'Error calling YOURLS. Probably a configuration issue, like wrong or missing "apiurl" or "signature".';
+            $this->error = 'Error calling YOURLS. Probably a configuration issue, like wrong or missing "apiurl" or "signature".';
             error_log('Error calling YOURLS: ' . $e->getMessage());
             return;
         }
@@ -91,9 +91,9 @@ class YourlsProxy
             $data['statusCode'] == 200 &&
             array_key_exists('shorturl', $data)
         ) {
-            $this->_url = $data['shorturl'];
+            $this->url = $data['shorturl'];
         } else {
-            $this->_error = 'Error parsing YOURLS response.';
+            $this->error = 'Error parsing YOURLS response.';
         }
     }
 
@@ -105,7 +105,7 @@ class YourlsProxy
      */
     public function getError()
     {
-        return $this->_error;
+        return $this->error;
     }
 
     /**
@@ -116,7 +116,7 @@ class YourlsProxy
      */
     public function getUrl()
     {
-        return $this->_url;
+        return $this->url;
     }
 
     /**
@@ -127,6 +127,6 @@ class YourlsProxy
      */
     public function isError()
     {
-        return !empty($this->_error);
+        return !empty($this->error);
     }
 }
