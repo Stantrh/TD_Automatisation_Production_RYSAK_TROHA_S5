@@ -88,6 +88,12 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
           **phpunit.xml**
           **ruleset.xml**
           **/ressources/**   
+          **code-coverage-results.md**
+          **phpcs.xml**
+          **phpcs_report.txt**
+          **phpmd_report.txt**
+          **phpstan_report.txt**
+          **README.md**
         server-dir : www/
 
 
