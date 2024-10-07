@@ -76,10 +76,8 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         username : ${{secrets.FTP_LOGIN}}
         password : ${{secrets.FTP_PASSWORD}}
         local-dir : ./
-        force-upload: true
         exclude : |
           **/.git*/**
-          **/node_modules/**
           **/vendor/**
           **/bin/**
           **log/**
