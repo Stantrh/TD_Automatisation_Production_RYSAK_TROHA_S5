@@ -83,7 +83,11 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
           **/bin/**
           **log/**
           **/coverage/**
-          **/tst/**   
+          **/tst/**
+          **phpstan.neon**
+          **phpunit.xml**
+          **ruleset.xml**
+          **/ressources/**   
         server-dir : www/
 
 
