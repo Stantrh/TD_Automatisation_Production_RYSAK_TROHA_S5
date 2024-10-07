@@ -76,7 +76,14 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         username : ${{secrets.FTP_LOGIN}}
         password : ${{secrets.FTP_PASSWORD}}
         local-dir : ./
-        exclude : "[**/.git*/**,**/node_modules/**,**/vendor/**]"
+        exclude : |
+          **/.git*/**
+          **/node_modules/**
+          **/vendor/**
+          **/bin/**
+          **log/**
+          **/coverage/**
+          **/tst/**   
         server-dir : www/
 
 
