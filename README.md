@@ -471,3 +471,49 @@ Found 1 abandoned package:
 +-------------------+----------------------------------------------------------------------------------+
 ```
 Seul un package est détecté comme obsolète (il n'est plus supporté), mais s'il est dans le projet c'est qu'il doit être utile donc nous ne nous en occuperons pas.
+
+
+## TD 5
+Pour commmencer, nous avons créé 3 secrets dans le dépôt correspondants à l'URL du serveur **FTP**, le **LOGIN** de notre groupe ainsi que notre **MOT DE PASSE**: 
+![repository_secrets](ressources/repo_secrets.png)
+
+Puis nous avons ajouté l'action [FTP Deploy](https://github.com/marketplace/actions/ftp-deploy) au fichier [ci.yml](.github/workflows/ci.yml) tout à la fin du fichier, en tant que dernière **étape**. Ainsi, une fois que toutes les validations sont faites (tests, analyse statique, code coverage), le déploiement peut être effectué sur l'environnement de pré production.
+
+<u>[ci.yml](.github/workflows/ci.yml) (commenté)</u> :
+```yml
+- name : Deploiement du projet 
+      uses : SamKirkland/FTP-Deploy-Action@v4.3.5
+      with : 
+       # on récupère les secrets github que l'on vient de créer
+        server : ${{secrets.FTP_URL}}
+        username : ${{secrets.FTP_LOGIN}}
+        password : ${{secrets.FTP_PASSWORD}}
+        local-dir : ./ # le dossier que l'on veut uploader sur le serveur ftp, en l'occurence tout le repository github, à l'exception de certains dossiers et fichiers
+        exclude : | # ici, on déclare tous les fichiers que le l'on ne veut pas uploader sur le serveur ftp
+          **/.git*/**
+          **/vendor/**
+          **/bin/**
+          **log/**
+          **/coverage/**
+          **/tst/**
+          **phpstan.neon**
+          **ruleset.xml**
+          **/ressources/**   
+          **code-coverage-results.md**
+          **phpcs.xml**
+          **phpcs_report.txt**
+          **phpmd_report.txt**
+          **phpstan_report.txt**
+          **README.md**
+          **phpunit.xml**
+        server-dir : www/ # on précise ici le répetoire dans lequel on veut uploader nos fichiers sur le serveur ftp
+```
+
+On peut ensuite vérifier que le serveur ftp comporte les fichiers qui ont été uploadés par l'action : 
+![action_ftp](ressources/action_ftp.png)
+![ls_ftp](ressources/ls_ftp.png)
+
+Ainsi, on peut se rendre sur [group1.bleumatin.fr](https://group1.bleumatin.fr) :  
+![group1.bleumatin.fr](ressources/group1_bleumatin_fr.png)
+
+## Plus encore avec les github actions

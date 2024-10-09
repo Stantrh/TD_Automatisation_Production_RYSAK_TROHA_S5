@@ -68,15 +68,16 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       run : |
         echo "## Résumé de la couverture de code" >> $GITHUB_STEP_SUMMARY
         cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
-    
+        
     - name : Deploiement du projet 
       uses : SamKirkland/FTP-Deploy-Action@v4.3.5
       with : 
+       # on récupère les secrets github que l'on vient de créer
         server : ${{secrets.FTP_URL}}
         username : ${{secrets.FTP_LOGIN}}
         password : ${{secrets.FTP_PASSWORD}}
-        local-dir : ./
-        exclude : |
+        local-dir : ./ # le dossier que l'on veut uploader sur le serveur ftp, en l'occurence tout le repository github, à l'exception de certains dossiers et fichiers
+        exclude : | # ici, on déclare tous les fichiers que le l'on ne veut pas uploader sur le serveur ftp
           **/.git*/**
           **/vendor/**
           **/bin/**
@@ -93,6 +94,6 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
           **phpstan_report.txt**
           **README.md**
           **phpunit.xml**
-        server-dir : www/
+        server-dir : www/ # on précise ici le répetoire dans lequel on veut uploader nos fichiers sur le serveur ftp
 
 
