@@ -3,10 +3,8 @@ var core = require("@actions/core");
 var axios = require("axios");
 async function sendDiscordNotification() {
   try {
-    const webhookUrl = process.env.DISCORD_WEBHOOK;
-    const repository = process.env.GITHUB_REPOSITORY;
-    const branch = process.env.GITHUB_REF_NAME;
-    const workflow = process.env.GITHUB_WORKFLOW;
+    const webhookUrl = core.getInput("discord_webhook");
+    const message = core.getInput("message");
     const job = "Test_et_Code_Coverage";
     const embed = {
       "embeds": [{
@@ -14,24 +12,9 @@ async function sendDiscordNotification() {
         "description": `**Job:** ${job}
 **Status:** :white_check_mark: Success
 
-:tada: Your workflow has completed successfully!`,
+${message}`,
         "color": 3066993,
         "fields": [
-          {
-            "name": "Repository",
-            "value": repository,
-            "inline": true
-          },
-          {
-            "name": "Branch",
-            "value": branch,
-            "inline": true
-          },
-          {
-            "name": "Workflow",
-            "value": workflow,
-            "inline": true
-          },
           {
             "name": "Job",
             "value": job,
