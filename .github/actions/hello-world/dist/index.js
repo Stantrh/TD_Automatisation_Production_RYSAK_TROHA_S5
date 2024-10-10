@@ -3,42 +3,42 @@ var core = require("@actions/core");
 var axios = require("axios");
 async function run() {
   try {
-    const message = core.getInput("message");
     const discordWebhook = core.getInput("discord_webhook");
     const testStatus = core.getInput("test_status");
+    const jobName = core.getInput("job_name");
     if (!discordWebhook) {
-      throw new Error("Discord webhook URL is missing!");
+      throw new Error("Il faut donner un webhook discord en entr\xE9e dans votre workflow !");
     }
-    const statusEmoji = testStatus === "success" ? ":white_check_mark:" : ":x:";
+    const statusEmoji = testStatus === "success" ? ":green_square:" : ":red_square:";
+    const nomWorkflow = process.env.GITHUB_WORKFLOW;
     const embedMessage = {
       embeds: [
         {
-          title: "Workflow Completion",
-          description: `**Job:** Test_et_Code_Coverage
+          title: "WORKFLOW **${nomWorkflow}**",
+          description: `**Job:** ${jobName}
 **Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}
 
-:tada: Your workflow has completed!`,
+:sparkles: Le workflow s'est bien compl\xE9t\xE9 ! :sparkles:`,
           color: testStatus === "success" ? 3066993 : 15158332,
           // Vert si succès, rouge sinon
           fields: [
-            { name: "Message", value: message, inline: true },
             { name: "Repository", value: process.env.GITHUB_REPOSITORY, inline: true },
-            { name: "Branch", value: process.env.GITHUB_REF_NAME, inline: true },
+            { name: "Branche", value: process.env.GITHUB_REF_NAME, inline: true },
             { name: "Workflow", value: process.env.GITHUB_WORKFLOW, inline: true },
-            { name: "Job", value: "Test_et_Code_Coverage", inline: true }
+            { name: "Job", value: jobName, inline: true }
           ],
           footer: {
-            text: "Workflow completed on",
-            icon_url: "https://cdn.discordapp.com/emojis/741060461505072260.png"
+            text: "Workflow compl\xE9t\xE9 le : ",
+            icon_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrGmeBv3SOLSKz6OlTVlVYkfH9_W3BBgdrA&s"
           },
           timestamp: (/* @__PURE__ */ new Date()).toISOString()
         }
       ]
     };
     await axios.post(discordWebhook, embedMessage);
-    core.info("Discord notification sent successfully!");
+    core.info("Notification discord bien envoy\xE9e !");
   } catch (error) {
-    core.setFailed(`Failed to send Discord notification: ${error.message}`);
+    core.setFailed(`Probl\xE8me dans l'envoi de la notification: ${error.message}`);
   }
 }
 run();

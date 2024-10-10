@@ -10,7 +10,7 @@ on:
       - dev-action
 
 jobs: # On définit dans cette section les tâches à exécuter lorsque les évènements ci-dessus ont été déclenchés.
-  Test_et_Code_Coverage: # le nom de notre tâche à exécuter
+  Test_et_Code_Coverage_DeploiementFTP: # le nom de notre tâche à exécuter
     runs-on: ubuntu-latest # On choisit d'utiliser un environnement Ubuntu car cela a fonctionné sur notre machine sous Ubuntu 22.04.4 LTS
 
     steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
@@ -96,25 +96,25 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
             **phpunit.xml**
           server-dir: www/ # on précise ici le répetoire dans lequel on veut uploader nos fichiers sur le serveur ftp
 
-  hello_world_job:
+  hello_world_job: # Nouveau job qui informe sur le résultat du job qui s'occupe du code coverage tests, etc.
     runs-on: ubuntu-latest
-    needs: Test_et_Code_Coverage
+    needs: Test_et_Code_Coverage_DeploiementFTP
     steps:
-      - name: Checkout code
+      - name: Checkout code # On récupère le code comme pour chaque job
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js # L'action est faite en javascript, donc on a besoin de node pour la lancer
         uses: actions/setup-node@v2
         with:
           node-version: "20"
 
-      - name: Install dependencies
+      - name: Install dependencies # on a besoin de npm pour installer toutes les dépendances (axios et les fonction @core de github toolkit)
         run: npm install
         working-directory: ./.github/actions/hello-world
 
-      - name: Run Hello World Action
+      - name: Résultats des tests, code coverage et déploiement sur le serveur FTP via Discord
         uses: ./.github/actions/hello-world
         with:
-          message: "Hello from your custom action!"
           discord_webhook: ${{ secrets.DISCORD_WEBHOOK }}
           test_status: ${{ needs.Test_et_Code_Coverage.result }}
+          job_name: Test_et_Code_Coverage_DeploiementFTP # Ici on met le nom du job précédent plutot que le définir dans index.js
