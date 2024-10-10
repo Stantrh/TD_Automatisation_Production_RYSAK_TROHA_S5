@@ -13,22 +13,42 @@ async function run() {
       throw new Error('Il faut donner un webhook discord en entrée dans votre workflow !');
     }
 
+    if(testStatus === ""){
+      testStatus = "Fail";
+    }
+
     // On construit le message que le webhook va afficher
     const statusEmoji = testStatus === 'success' ? ':green_square:' : ':red_square:'; //si le job du worflow a fonctionné ou pas
     const nomWorkflow = process.env.GITHUB_WORKFLOW;
     const embedMessage = { 
       username: 'Github Actions AUTOMATISATION DE LA PRODUCTION',
-      avatar_url: 'https://ih1.redbubble.net/image.5030029175.8203/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg',
+      avatar_url: 'https://ipfs.io/ipfs/QmcoYqrddqLcfDa2q6iA4X2i4FMAjEAEGNPxSi1oNWjfCZ/nft.jpg',
       embeds: [
         {
-          title: `WORKFLOW **${nomWorkflow}**`,
+          title: `🚀WORKFLOW **${nomWorkflow}**`,
           description: `**Job:** ${jobName}\n**Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}\n\n:sparkles: Le workflow s'est bien complété ! :sparkles:`,
           color: testStatus === 'success' ? 3066993 : 15158332,  // Vert si succès, rouge sinon
           fields: [
-            { name: 'Repository', value: process.env.GITHUB_REPOSITORY, inline: true },
-            { name: 'Branche', value: process.env.GITHUB_REF_NAME, inline: true },
-            { name: 'Workflow', value: process.env.GITHUB_WORKFLOW, inline: true },
-            { name: 'Job', value: jobName, inline: true }
+            { 
+              name: '📂 **Repository**', 
+              value: `\`\`\`${process.env.GITHUB_REPOSITORY}\`\`\``, // Encadré de texte en bloc
+              inline: false 
+            },
+            { 
+              name: '🌿 **Branche**', 
+              value: `\`${process.env.GITHUB_REF_NAME}\``, // Texte encadré dans des backticks
+              inline: true 
+            },
+            { 
+              name: '⚙️ **Workflow**', 
+              value: `\`${process.env.GITHUB_WORKFLOW}\``, 
+              inline: true 
+            },
+            { 
+              name: '💼 **Job**', 
+              value: `\`${jobName}\``, 
+              inline: true 
+            }
           ],
           footer: {
             text: 'Workflow complété ',
