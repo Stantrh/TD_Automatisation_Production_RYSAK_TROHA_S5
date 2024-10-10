@@ -3,7 +3,7 @@ const axios = require('axios');
 
 async function sendDiscordNotification() {
     try {
-        const webhookUrl = process.env.DISCORD_WEBHOOK;
+        const webhookUrl = "https://discord.com/api/webhooks/1293877395937296434/gMJiOhzYKNiLrBHCOUtQS2WO5bnzifA7sIN1b4fpuCf0sOzkb_GiMC9wwcB5d4lFRT0r";
         const repository = process.env.GITHUB_REPOSITORY;
         const branch = process.env.GITHUB_REF_NAME;
         const workflow = process.env.GITHUB_WORKFLOW;
