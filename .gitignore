@@ -7,3 +7,6 @@ log
 .phpunit.result.cache
 coverage/
 composer.lock
+.github/actions/discord-output/package.json
+.github/actions/discord-output/package-lock.json
+.github/actions/discord-output/src/
