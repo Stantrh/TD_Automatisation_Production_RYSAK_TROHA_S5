@@ -4,10 +4,10 @@ name: CI Tests et Discord # Ici on définit le nom du workflow
 on:
   push: # Lorsqu'un collaborateur du github fait un push sur la branche main. On peut ajouter autant de branches qu'on veut sur lesquelles les évènements doivent déclencher l'exécutuion des tâches.
     branches:
-      - dev-action
+      - main
   pull_request: # Idem mais pour une pull_request sur la branche main.
     branches:
-      - dev-action
+      - main
 
 jobs: # On définit dans cette section les tâches à exécuter lorsque les évènements ci-dessus ont été déclenchés.
   Test_et_Code_Coverage_DeploiementFTP: # le nom de notre tâche à exécuter
@@ -26,7 +26,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       - name: Dependances
         run:
           | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
-          mauvaise ocmmande pour faire planter le workflow  # Installe les dépendances via Composer
+          composer install # installation des  dépendances via Composer
 
       - name: PHP CodeSniffer
         run: |
