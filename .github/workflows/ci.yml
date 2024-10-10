@@ -1,99 +1,113 @@
-name: CI Tests  # Ici on définit le nom du workflow
+name: CI Tests # Ici on définit le nom du workflow
 
 # Dans on, on peut choisir pour quelle type d'évènement les tâches définies dans la section jobs ci-dessous vont être déclenchées
 on:
   push: # Lorsqu'un collaborateur du github fait un push sur la branche main. On peut ajouter autant de branches qu'on veut sur lesquelles les évènements doivent déclencher l'exécutuion des tâches.
     branches:
-      - main
+      - dev-action
   pull_request: # Idem mais pour une pull_request sur la branche main.
     branches:
-      - main
+      - dev-action
 
 jobs: # On définit dans cette section les tâches à exécuter lorsque les évènements ci-dessus ont été déclenchés.
   Test_et_Code_Coverage: # le nom de notre tâche à exécuter
     runs-on: ubuntu-latest # On choisit d'utiliser un environnement Ubuntu car cela a fonctionné sur notre machine sous Ubuntu 22.04.4 LTS
 
     steps: # Puis les étapes différentes à faire pour exécuter correctement notre tâche, consistant en des tests
-    - name: Checkout code
-      uses: actions/checkout@v4 # On récupère le code source du repository grâce à une action github qui est prédéfinie
+      - name: Checkout code
+        uses: actions/checkout@v4 # On récupère le code source du repository grâce à une action github qui est prédéfinie
 
-    - name: PHP Set up
-      uses: shivammathur/setup-php@v2  # On utilise encore une action prédéfinie pour configurer php
-      with: # Permet de passer des paramètres à l'action setup-php
-        php-version: '8.1' # Version de PHP qu'on utilise
-        extensions: mbstring, sqlite3, gd, simplexml, xdebug # Extensions PHP nécessaires
+      - name: PHP Set up
+        uses: shivammathur/setup-php@v2 # On utilise encore une action prédéfinie pour configurer php
+        with: # Permet de passer des paramètres à l'action setup-php
+          php-version: "8.1" # Version de PHP qu'on utilise
+          extensions: mbstring, sqlite3, gd, simplexml, xdebug # Extensions PHP nécessaires
 
-    - name: Dependances
-      run: |  # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
-        composer install  # Installe les dépendances via Composer
+      - name: Dependances
+        run:
+          | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
+          composer install  # Installe les dépendances via Composer
 
+      - name: PHP CodeSniffer
+        run: |
+          ./vendor/bin/phpcs --report=source > phpcs_report.txt || true
+          echo "## PHP CodeSniffer Report" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat phpcs_report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
-    - name: PHP CodeSniffer
-      run: |
-        ./vendor/bin/phpcs --report=source > phpcs_report.txt || true
-        echo "## PHP CodeSniffer Report" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        cat phpcs_report.txt >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
+      - name: PHP Mess Detector
+        run: |
+          ./vendor/bin/phpmd ./lib ansi ruleset.xml > phpmd_report.txt || true
 
+      - name: PHPStan
+        run: |
+          ./vendor/bin/phpstan analyse -c phpstan.neon --error-format=github > phpstan_report.txt || true
 
-    - name: PHP Mess Detector
-      run: |
-        ./vendor/bin/phpmd ./lib ansi ruleset.xml > phpmd_report.txt || true
+      - name: Tests PHPUnit
+        run:
+          | # on lance les tests via phpunit et la configuration <testsuite> de phpunit.xml
+          vendor/bin/phpunit --configuration phpunit.xml
 
+      - name: Code coverage avec XDEBUG
+        run:
+          | # on crée le dossier qui contiendra les rapports de coverage puis on lance phpunit en mode coverage avec XDEBUG
+          mkdir -p coverage
+          XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml
 
-    - name: PHPStan
-      run: |
-        ./vendor/bin/phpstan analyse -c phpstan.neon --error-format=github > phpstan_report.txt || true
+      - name: Ajout du rapport de couverture
+        uses: irongut/CodeCoverageSummary@v1.3.0 # action github qu'on utilise
+        with:
+          filename: coverage/coverage-cobertura.xml
+          badge: true
+          format: markdown
+          output: both
 
-    - name: Tests PHPUnit
-      run: | # on lance les tests via phpunit et la configuration <testsuite> de phpunit.xml
-        vendor/bin/phpunit --configuration phpunit.xml
+      - name: Ajout du rapport au summary github
+        run: |
+          echo "## Résumé de la couverture de code" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
-    - name: Code coverage avec XDEBUG
-      run: | # on crée le dossier qui contiendra les rapports de coverage puis on lance phpunit en mode coverage avec XDEBUG
-        mkdir -p coverage
-        XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml
-        
+      - name: Deploiement du projet
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # on récupère les secrets github que l'on vient de créer
+          server: ${{secrets.FTP_URL}}
+          username: ${{secrets.FTP_LOGIN}}
+          password: ${{secrets.FTP_PASSWORD}}
+          local-dir: ./ # le dossier que l'on veut uploader sur le serveur ftp, en l'occurence tout le repository github, à l'exception de certains dossiers et fichiers
+          exclude:
+            | # ici, on déclare tous les fichiers que le l'on ne veut pas uploader sur le serveur ftp
+            **/.git*/**
+            **/vendor/**
+            **/bin/**
+            **log/**
+            **/coverage/**
+            **/tst/**
+            **phpstan.neon**
+            **ruleset.xml**
+            **/ressources/**   
+            **code-coverage-results.md**
+            **phpcs.xml**
+            **phpcs_report.txt**
+            **phpmd_report.txt**
+            **phpstan_report.txt**
+            **README.md**
+            **phpunit.xml**
+          server-dir: www/ # on précise ici le répetoire dans lequel on veut uploader nos fichiers sur le serveur ftp
 
-    - name: Ajout du rapport de couverture 
-      uses: irongut/CodeCoverageSummary@v1.3.0 # action github qu'on utilise 
-      with:
-        filename: coverage/coverage-cobertura.xml
-        badge: true
-        format : markdown
-        output : both
+  hello_world_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name : Ajout du rapport au summary github
-      run : |
-        echo "## Résumé de la couverture de code" >> $GITHUB_STEP_SUMMARY
-        cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
-        
-    - name : Deploiement du projet 
-      uses : SamKirkland/FTP-Deploy-Action@v4.3.5
-      with : 
-       # on récupère les secrets github que l'on vient de créer
-        server : ${{secrets.FTP_URL}}
-        username : ${{secrets.FTP_LOGIN}}
-        password : ${{secrets.FTP_PASSWORD}}
-        local-dir : ./ # le dossier que l'on veut uploader sur le serveur ftp, en l'occurence tout le repository github, à l'exception de certains dossiers et fichiers
-        exclude : | # ici, on déclare tous les fichiers que le l'on ne veut pas uploader sur le serveur ftp
-          **/.git*/**
-          **/vendor/**
-          **/bin/**
-          **log/**
-          **/coverage/**
-          **/tst/**
-          **phpstan.neon**
-          **ruleset.xml**
-          **/ressources/**   
-          **code-coverage-results.md**
-          **phpcs.xml**
-          **phpcs_report.txt**
-          **phpmd_report.txt**
-          **phpstan_report.txt**
-          **README.md**
-          **phpunit.xml**
-        server-dir : www/ # on précise ici le répetoire dans lequel on veut uploader nos fichiers sur le serveur ftp
+      - name: Run Hello World Action
+        uses: ./.github/actions/hello-world
+        with:
+          message: "Hello from your custom action!"
 
-
+      - name: Discord Notification
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "Your workflow is complete!"}' ${{ secrets.DISCORD_WEBHOOK_URL }}

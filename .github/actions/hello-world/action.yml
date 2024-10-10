@@ -1,0 +1,11 @@
+name "Envoyer un Hello World !"
+description "Envoie un hello world par défaut, ou le message donné en input"
+inputs: 
+  message: 
+    description: "Message à envoyer"
+    required: true
+    default: "Hello World"
+
+runs: 
+  using: "node16"
+  main: "index.js"
