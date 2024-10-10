@@ -1,0 +1,16 @@
+name: "Output d'un worfklow sur discord"
+description: "Envoie un hello world par défaut, ou le message donné en input"
+inputs:
+  discord_webhook:
+    description: "URL du webhook discord"
+    required: true
+  test_status:
+    description: "Status du job précédent"
+    required: true
+  job_name:
+    description: "Nom du job dont le webhook discord doit notifier"
+    required: true
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
