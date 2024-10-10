@@ -1,16 +1,16 @@
 {
-  "name": "hello-world",
+  "name": "discord-output",
   "version": "1.0.0",
-  "description": "Print un hello world et notifie sur discord via un webhook",
+  "description": "Donne un output du workflow et de ses jobs sur discord via un webhook",
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/index.js --bundle --platform=node --outfile=dist/index.js --external:@actions/core --external:axios",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "hello",
-    "world",
-    "discord"
+    "discord",
+    "output",
+    "webhook"
   ],
   "author": "Stanislas TROHA",
   "license": "ISC",

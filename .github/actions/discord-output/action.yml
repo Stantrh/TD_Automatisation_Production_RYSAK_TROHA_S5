@@ -1,4 +1,4 @@
-name: "Envoyer un Hello World !"
+name: "Output d'un worfklow sur discord"
 description: "Envoie un hello world par défaut, ou le message donné en input"
 inputs:
   discord_webhook:

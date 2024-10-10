@@ -111,10 +111,10 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
       - name: Install dependencies # on a besoin de npm pour installer toutes les dépendances (axios et les fonction @core de github toolkit)
         run: npm install
-        working-directory: ./.github/actions/hello-world
+        working-directory: ./.github/actions/discord-output
 
       - name: Résultats des tests, code coverage et déploiement sur le serveur FTP via Discord
-        uses: ./.github/actions/hello-world
+        uses: ./.github/actions/discord-output
         with:
           discord_webhook: ${{ secrets.DISCORD_WEBHOOK }}
           test_status: ${{ needs.Test_et_Code_Coverage_DeploiementFTP.result }}
