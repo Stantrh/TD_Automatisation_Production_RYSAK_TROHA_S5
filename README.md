@@ -3,8 +3,19 @@
 **RYSAK** Hugo --> hugo.rysak4@etu.univ-lorraine.fr  
 **TROHA** Stanislas --> stanislas.troha8@etu.univ-lorraine.fr
 
+
+## Table des matières
+- [TD 1 - Introduction](#td-1---introduction)
+- [TD 2 - Tests et Actions Github](#td-2---tests-et-action-github)
+- [TD 3 - Code Coverage](#td-3---code-coverage)
+- [TD 4 - Analyse Statique](#td-4---analyse-statique)
+  - [PHPCS](#--phpcs-php-code-sniffer)
+  - [PHPMD](#--phpmd-php-mess-detector)
+  - [PHPSTAN](#--phpstan-php-static-analysis-tool-)
+- [TD 5 - Déploiement Continu](#td-5---déploiement-continu)
+- [Plus encore avec les Github Actions](#plus-encore-avec-les-github-actions)
 _ _ _ 
-## TD 1
+## TD 1 - Introduction
 Grâce au TD1, nous avons déjà pu comprendre le fonctionnement de php ainsi que de ses extensions (sqlite3, mbstring, gd). Nous avons également découvert phpunit qui permet de faire des tests unitaire contenus dans divers fichiers dans un dossier (tst).
 Nouvelle commande utile découverte : `php -m` pour lister les extensions php en cours de fonctionnement.
 
@@ -24,7 +35,7 @@ On peut simplement faire `make install`pour installer les dépendances de Privat
 
 _ _ _ 
 
-## TD 2
+## TD 2 - Tests et Action Github
 Nous avons découvert les actions avec les workflows github. 
 
 Lors de chaque action faite par un utilisateur du repository github, on peut exécuter une ou plusieurs tâches (jobs) en lien avec cette dernière. Dans notre cas, on effectue des tests sur l'application grâce à **phpunit** après chaque requête *push*, ou *pull_request*.
@@ -79,7 +90,7 @@ Voici des captures d'écrans montrant la réalisation des tests :
 
 _ _ _ 
 
-## TD 3 : Code Coverage
+## TD 3 - Code Coverage
 
 Nous avons découvert que pour les tests ou du code coverage, on peut spécifier via l'option `--configuration` le fichier de configuration [phpunit.xml](phpunit.xml). Grâce à ça, la partie concernée du fichier (`<coverage></coverage>` ou `<testsuite></testsuite>`) va être utilisée par phpunit pour run les tests ou le coverage du code.
 D'ailleurs, la configuration de [phpunit.xml](phpunit.xml) importe. C'est dans ce fichier qu'on peut choisir les dossiers/fichiers qui sont testés pour le coverage et les tests. On peut définir les dossiers à tester avec la balise `<include>` : 
@@ -173,7 +184,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
 _ _ _ 
 
-## TD 4 : Analyse statique
+## TD 4 - Analyse statique
 
 ### - PHPCS (PHP Code Sniffer)
 
@@ -473,7 +484,7 @@ Found 1 abandoned package:
 Seul un package est détecté comme obsolète (il n'est plus supporté), mais s'il est dans le projet c'est qu'il doit être utile donc nous ne nous en occuperons pas.
 
 
-## TD 5
+## TD 5 - Déploiement continu
 Pour commmencer, nous avons créé 3 secrets dans le dépôt correspondants à l'URL du serveur **FTP**, le **LOGIN** de notre groupe ainsi que notre **MOT DE PASSE**: 
 ![repository_secrets](ressources/repo_secrets.png)
 
@@ -648,7 +659,8 @@ async function run() {
 }
 run();
 ```
-
+> On utilise [axios](https://axios-http.com/docs/intro) pour effectuer la requête à l'URL du webhook discord.  
+> Grâce à **@action/core** du [toolkit](https://github.com/actions/toolkit) proposé par Github, on peut facilement récupérer les inputs (webhook discord, succès/échec du job) et gérer les outputs.
 
 
 Grâce à ça, lors de chaque push ou pull request sur le repository sur la branche main, le nouveau job est exécuté et notifie sur discord.
@@ -656,6 +668,6 @@ Grâce à ça, lors de chaque push ou pull request sur le repository sur la bran
 - Par exemple, si le job de test coverage, tests et déploiement sur le serveur FTP rencontre une erreur, le message ressemble à ça : 
 ![fail_workflow](ressources/fail_workflow.png)
 
-Et si le job s'exécute sans problème, on obtient ce message : 
-
+- Et si le job s'exécute sans problème, on obtient ce message :
+![success_workflow](ressources/success_workflow.png)
 
