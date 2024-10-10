@@ -1,37 +1,44 @@
 // src/index.js
 var core = require("@actions/core");
 var axios = require("axios");
-async function sendDiscordNotification() {
+async function run() {
   try {
-    const webhookUrl = core.getInput("discord_webhook");
     const message = core.getInput("message");
-    const job = "Test_et_Code_Coverage";
-    const embed = {
-      "embeds": [{
-        "title": "Workflow Completion",
-        "description": `**Job:** ${job}
-**Status:** :white_check_mark: Success
+    const discordWebhook = core.getInput("discord_webhook");
+    const testStatus = core.getInput("test_status");
+    if (!discordWebhook) {
+      throw new Error("Discord webhook URL is missing!");
+    }
+    const statusEmoji = testStatus === "success" ? ":white_check_mark:" : ":x:";
+    const embedMessage = {
+      embeds: [
+        {
+          title: "Workflow Completion",
+          description: `**Job:** Test_et_Code_Coverage
+**Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}
 
-${message}`,
-        "color": 3066993,
-        "fields": [
-          {
-            "name": "Job",
-            "value": job,
-            "inline": true
-          }
-        ],
-        "footer": {
-          "text": "Workflow completed on",
-          "icon_url": "https://cdn.discordapp.com/emojis/741060461505072260.png"
-        },
-        "timestamp": (/* @__PURE__ */ new Date()).toISOString()
-      }]
+:tada: Your workflow has completed!`,
+          color: testStatus === "success" ? 3066993 : 15158332,
+          // Vert si succès, rouge sinon
+          fields: [
+            { name: "Message", value: message, inline: true },
+            { name: "Repository", value: process.env.GITHUB_REPOSITORY, inline: true },
+            { name: "Branch", value: process.env.GITHUB_REF_NAME, inline: true },
+            { name: "Workflow", value: process.env.GITHUB_WORKFLOW, inline: true },
+            { name: "Job", value: "Test_et_Code_Coverage", inline: true }
+          ],
+          footer: {
+            text: "Workflow completed on",
+            icon_url: "https://cdn.discordapp.com/emojis/741060461505072260.png"
+          },
+          timestamp: (/* @__PURE__ */ new Date()).toISOString()
+        }
+      ]
     };
-    await axios.post(webhookUrl, embed);
-    console.log("Discord notification sent successfully!");
+    await axios.post(discordWebhook, embedMessage);
+    core.info("Discord notification sent successfully!");
   } catch (error) {
     core.setFailed(`Failed to send Discord notification: ${error.message}`);
   }
 }
-sendDiscordNotification();
+run();
