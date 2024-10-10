@@ -1,0 +1,24 @@
+{
+  "name": "discord-output",
+  "version": "1.0.0",
+  "description": "Donne un output du workflow et de ses jobs sur discord via un webhook",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --platform=node --outfile=dist/index.js --external:@actions/core --external:axios",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "output",
+    "webhook"
+  ],
+  "author": "Stanislas TROHA",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "axios": "^1.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
