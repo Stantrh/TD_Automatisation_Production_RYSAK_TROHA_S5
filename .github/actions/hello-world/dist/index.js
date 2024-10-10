@@ -12,9 +12,11 @@ async function run() {
     const statusEmoji = testStatus === "success" ? ":green_square:" : ":red_square:";
     const nomWorkflow = process.env.GITHUB_WORKFLOW;
     const embedMessage = {
+      username: "Github Actions AUTOMATISATION DE LA PRODUCTION",
+      avatar_url: "https://ih1.redbubble.net/image.5030029175.8203/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg",
       embeds: [
         {
-          title: "WORKFLOW **${nomWorkflow}**",
+          title: `WORKFLOW **${nomWorkflow}**`,
           description: `**Job:** ${jobName}
 **Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}
 
@@ -28,7 +30,7 @@ async function run() {
             { name: "Job", value: jobName, inline: true }
           ],
           footer: {
-            text: "Workflow compl\xE9t\xE9 le : ",
+            text: "Workflow compl\xE9t\xE9 ",
             icon_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrGmeBv3SOLSKz6OlTVlVYkfH9_W3BBgdrA&s"
           },
           timestamp: (/* @__PURE__ */ new Date()).toISOString()

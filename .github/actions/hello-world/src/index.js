@@ -17,6 +17,8 @@ async function run() {
     const statusEmoji = testStatus === 'success' ? ':green_square:' : ':red_square:'; //si le job du worflow a fonctionné ou pas
     const nomWorkflow = process.env.GITHUB_WORKFLOW;
     const embedMessage = { 
+      username: 'Github Actions AUTOMATISATION DE LA PRODUCTION',
+      avatar_url: 'https://ih1.redbubble.net/image.5030029175.8203/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg',
       embeds: [
         {
           title: `WORKFLOW **${nomWorkflow}**`,
