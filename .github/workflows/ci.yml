@@ -98,6 +98,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
 
   hello_world_job:
     runs-on: ubuntu-latest
+    needs: Test_et_Code_Coverage
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -116,3 +117,4 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         with:
           message: "Hello from your custom action!"
           discord_webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          test_status: ${{ needs.Test_et_Code_Coverage.result }}
