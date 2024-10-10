@@ -19,7 +19,7 @@ async function run() {
     const embedMessage = { 
       embeds: [
         {
-          title: 'WORKFLOW **${nomWorkflow}**',
+          title: `WORKFLOW **${nomWorkflow}**`,
           description: `**Job:** ${jobName}\n**Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}\n\n:sparkles: Le workflow s'est bien complété ! :sparkles:`,
           color: testStatus === 'success' ? 3066993 : 15158332,  // Vert si succès, rouge sinon
           fields: [
@@ -29,7 +29,7 @@ async function run() {
             { name: 'Job', value: jobName, inline: true }
           ],
           footer: {
-            text: 'Workflow complété le : ',
+            text: 'Workflow complété ',
             icon_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrGmeBv3SOLSKz6OlTVlVYkfH9_W3BBgdrA&s'
           },
           timestamp: new Date().toISOString()
