@@ -5,7 +5,7 @@ async function run() {
   try {
     // On récupère les inputs du worfklow ci.yml
     const discordWebhook = core.getInput('discord_webhook');
-    const testStatus = core.getInput('test_status');
+    let testStatus = core.getInput('test_status');
     const jobName = core.getInput('job_name');
 
     // Au cas où quelqu'un utilise l'action et ne spécifie pas l'url du webhook dans les inputs
