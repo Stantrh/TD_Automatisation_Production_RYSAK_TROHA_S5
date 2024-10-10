@@ -517,3 +517,145 @@ Ainsi, on peut se rendre sur [group1.bleumatin.fr](https://group1.bleumatin.fr) 
 ![group1.bleumatin.fr](ressources/group1_bleumatin_fr.png)
 
 ## Plus encore avec les github actions
+Pour commencer, il y a plusieurs façons de faire des actions github. Nous avons choisi d'en faire une en [JavaScript](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-javascript-action) étant donné que c'est un langage auquel nous sommes familiers, et que la gestion de paquets avec node est plutôt intuitive.
+
+Nous avons décidé de créer une action permettant de notifier sur discord, via un webhook, le résultat de l'exécution d'un worfklow. (Dans notre cas, lors de chaque push ou pull request sur la branche main). 
+C'est à dire que l'action (qui est un job à part entière) va récupérer en entrée la sortie d'exécution du job précédent (Test_et_Code_Coverage_DeploiementFTP dans notre cas) et l'afficher sous forme de message embedded sur discord.
+
+Pour commencer, il fallait créer un webhook sur discord dans un salon et un serveur dédiés, puis ajouter son URL dans les secrets du repository :
+![secret_webhook](ressources/secret_webhook.png) 
+
+
+ 
+Il a fallu ensuite ajouter un deuxième job dans notre fichier [ci.yml](.github/workflows/ci.yml) :
+```yml
+ notifier-discord: # Nouveau job qui informe sur le résultat du job qui s'occupe du code coverage tests, etc.
+    runs-on: ubuntu-latest
+    needs: Test_et_Code_Coverage_DeploiementFTP
+    if: always()
+    steps:
+      - name: Checkout code # On récupère le code comme pour chaque job
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js # L'action est faite en javascript, donc on a besoin de node pour la lancer
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Install dependencies # on a besoin de npm pour installer toutes les dépendances (axios et les fonction @core de github toolkit)
+        run: npm install
+        working-directory: ./.github/actions/discord-output
+
+      - name: Résultats des tests, code coverage et déploiement sur le serveur FTP via Discord
+        uses: ./.github/actions/discord-output
+        with:
+          discord_webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          test_status: ${{ needs.Test_et_Code_Coverage_DeploiementFTP.result }}
+          job_name: Test_et_Code_Coverage_DeploiementFTP # Ici on met le nom du job précédent plutot que le définir dans index.js
+```
+> **needs** permet de définir le fait d'attendre la fin de l'exécution du premier job pour commencer celui-là. C'est nécessaire d'attendre, pour que le webhook puisse afficher le résultat du job précédent(exécuté sans erreurs, avec, etc.)  
+> **if: always()** permet de faire en sorte que ce job ne soit pas abandonné si jamais le précédent échoue.
+
+
+Puis, il fallait définir un fichier [action.yml](.github/actions/discord-output/action.yml) qui fait le lien entre [ci.yml](.github/workflows/ci.yml) et notre code JavaScript chargé d'envoyer le message sur discord : 
+```yml
+name: "Output d'un worfklow sur discord"
+description: "Envoie sous forme de message embedded les résultats d'exécution d'un worfklow. Ceci via un webhook"
+inputs: # On définit les inputs. c'est à dire, les informations données dans le with: lorsque le fichier de worfklow utilise cette action
+  discord_webhook:
+    description: "URL du webhook discord"
+    required: true
+  test_status:
+    description: "Status du job précédent"
+    required: true
+  job_name:
+    description: "Nom du job dont le webhook discord doit notifier"
+    required: true
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
+```
+> Le champ **inputs** correspond aux entrées qui vont être données au programme JavaScript. Par exemple, le programme aura besoin du lien du webhook pour savoir où envoyer les informations, mais aussi de savoir si le job précédent a été un succès ou un échec, et également le nom de ce dernier.
+
+
+Pour finir, il a fallu écrire le contenu de l'index.js contenant la logique pour notifier sur discord : 
+```js
+const core = require('@actions/core');
+const axios = require('axios');
+
+async function run() {
+  try {
+    // On récupère les inputs du worfklow ci.yml
+    const discordWebhook = core.getInput('discord_webhook');
+    const testStatus = core.getInput('test_status');
+    const jobName = core.getInput('job_name');
+
+    // Au cas où quelqu'un utilise l'action et ne spécifie pas l'url du webhook dans les inputs
+    if (!discordWebhook) {
+      throw new Error('Il faut donner un webhook discord en entrée dans votre workflow !');
+    }
+
+    // On construit le message que le webhook va afficher
+    const statusEmoji = testStatus === 'success' ? ':green_square:' : ':red_square:'; //si le job du worflow a fonctionné ou pas
+    const nomWorkflow = process.env.GITHUB_WORKFLOW;
+    const embedMessage = { 
+      username: 'Github Actions AUTOMATISATION DE LA PRODUCTION',
+      avatar_url: 'https://ipfs.io/ipfs/QmcoYqrddqLcfDa2q6iA4X2i4FMAjEAEGNPxSi1oNWjfCZ/nft.jpg',
+      embeds: [
+        {
+          title: `🚀 WORKFLOW : **${nomWorkflow}**`,
+          description: `**Job:** *${jobName}*\n**Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}\n\n:sparkles: Le workflow s'est bien complété ! :sparkles:`,
+          color: testStatus === 'success' ? 3066993 : 15158332,  // Vert si succès, rouge sinon
+          fields: [
+            { 
+              name: '📂 **Repository**', 
+              value: `\`\`\`${process.env.GITHUB_REPOSITORY}\`\`\``, // Encadré de texte en bloc
+              inline: false 
+            },
+            { 
+              name: '🌿 **Branche**', 
+              value: `\`${process.env.GITHUB_REF_NAME}\``, // Texte encadré dans des backticks
+              inline: true 
+            },
+            { 
+              name: '⚙️ **Workflow**', 
+              value: `\`${process.env.GITHUB_WORKFLOW}\``, 
+              inline: true 
+            },
+            { 
+              name: '💼 **Job**', 
+              value: `\`${jobName}\``, 
+              inline: false 
+            }
+          ],
+          footer: {
+            text: 'Workflow complété ',
+            icon_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrGmeBv3SOLSKz6OlTVlVYkfH9_W3BBgdrA&s'
+          },
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+
+    // Et avec axios on poste le message via l'url du webhook et ce qu'on a construit
+    await axios.post(discordWebhook, embedMessage);
+
+    core.info('Notification discord bien envoyée !');
+  } catch (error) {
+    core.setFailed(`Problème dans l'envoi de la notification: ${error.message}`);
+  }
+}
+run();
+```
+
+
+
+Grâce à ça, lors de chaque push ou pull request sur le repository sur la branche main, le nouveau job est exécuté et notifie sur discord.
+
+- Par exemple, si le job de test coverage, tests et déploiement sur le serveur FTP rencontre une erreur, le message ressemble à ça : 
+![fail_workflow](ressources/fail_workflow.png)
+
+Et si le job s'exécute sans problème, on obtient ce message : 
+
+

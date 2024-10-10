@@ -1,6 +1,6 @@
 name: "Output d'un worfklow sur discord"
-description: "Envoie un hello world par défaut, ou le message donné en input"
-inputs:
+description: "Envoie sous forme de message embedded les résultats d'exécution d'un worfklow. Ceci via un webhook"
+inputs: # On définit les inputs. c'est à dire, les informations données dans le with: lorsque le fichier de worfklow utilise cette action
   discord_webhook:
     description: "URL du webhook discord"
     required: true
