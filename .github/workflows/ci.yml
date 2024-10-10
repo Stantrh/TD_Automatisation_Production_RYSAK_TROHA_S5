@@ -115,3 +115,4 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
         uses: ./.github/actions/hello-world
         with:
           message: "Hello from your custom action!"
+          discord_webhook: ${{ secrets.DISCORD_WEBHOOK }}

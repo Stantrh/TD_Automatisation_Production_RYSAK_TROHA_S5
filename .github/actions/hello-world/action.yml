@@ -5,6 +5,9 @@ inputs:
     description: "Message à envoyer"
     required: true
     default: "Hello World"
+  discord_webhook:
+    description: "URL du webhook discord"
+    required: true
 
 runs:
   using: "node20"
