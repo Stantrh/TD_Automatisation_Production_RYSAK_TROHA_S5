@@ -19,9 +19,9 @@ async function run() {
       avatar_url: "https://ipfs.io/ipfs/QmcoYqrddqLcfDa2q6iA4X2i4FMAjEAEGNPxSi1oNWjfCZ/nft.jpg",
       embeds: [
         {
-          title: `\u{1F680}WORKFLOW **${nomWorkflow}**`,
-          description: `**Job:** ${jobName}
-**Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}
+          title: `\u{1F680} WORKFLOW **${nomWorkflow}**`,
+          description: `**Job:** *${jobName}
+**Status:** ${statusEmoji} ${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)}*
 
 :sparkles: Le workflow s'est bien compl\xE9t\xE9 ! :sparkles:`,
           color: testStatus === "success" ? 3066993 : 15158332,
@@ -47,7 +47,7 @@ async function run() {
             {
               name: "\u{1F4BC} **Job**",
               value: `\`${jobName}\``,
-              inline: true
+              inline: false
             }
           ],
           footer: {

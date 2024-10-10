@@ -26,7 +26,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       - name: Dependances
         run:
           | # permet d'exécuter une commande shell sur l'environnement ubuntu déployé.
-          composer install  # Installe les dépendances via Composer
+          mauvaise ocmmande pour faire planter le workflow  # Installe les dépendances via Composer
 
       - name: PHP CodeSniffer
         run: |
