@@ -105,7 +105,7 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install
@@ -119,4 +119,4 @@ jobs: # On définit dans cette section les tâches à exécuter lorsque les év�
       - name: Discord Notification
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"content": "Your workflow is complete!"}' ${{ secrets.DISCORD_WEBHOOK_URL }}
+          -d '{"content": "Your workflow is complete!"}' ${{ secrets.DISCORD_WEBHOOK }}

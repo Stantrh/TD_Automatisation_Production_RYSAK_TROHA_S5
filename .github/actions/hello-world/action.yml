@@ -7,5 +7,5 @@ inputs:
     default: "Hello World"
 
 runs:
-  using: "node16"
+  using: "node18"
   main: "dist/index.js"
